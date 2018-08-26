@@ -183,8 +183,8 @@ bind stream goal =
         Empty ->
             mzero
 
-        Immature followingStream ->
-            Immature (\_ -> bind (followingStream ()) goal)
+        Immature lazyStream ->
+            Immature (\_ -> bind (lazyStream ()) goal)
 
         Mature state followingStream ->
             let
