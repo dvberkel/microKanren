@@ -7,6 +7,8 @@ module MicroKanren exposing
     , Var
     , callFresh
     , identical
+    , disjoin
+    , conjoin
     )
 
 {-| μKanren provides an implementation of the
