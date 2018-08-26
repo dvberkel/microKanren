@@ -1,4 +1,13 @@
-module MicroKanren exposing (Goal, State, Stream(..), Substitution, Term(..), Variable)
+module MicroKanren exposing
+    ( Goal
+    , State
+    , Stream(..)
+    , Substitution
+    , Term(..)
+    , Var
+    , callFresh
+    , identical
+    )
 
 {-| μKanren provides an implementation of the
 
@@ -12,14 +21,14 @@ import Dict
 
 {-| _Variable_s are identified by integers.
 -}
-type alias Variable =
+type alias Var =
     Int
 
 
 {-| _Term_s are operated on by μKanren programs
 -}
 type Term a
-    = Var Variable
+    = Variable Var
     | Value a
     | Pair ( Term a, Term a )
 
@@ -27,14 +36,14 @@ type Term a
 {-| A _substition_ binds variables to terms.
 -}
 type alias Substitution a =
-    Dict.Dict Variable (Term a)
+    Dict.Dict Var (Term a)
 
 
 {-| A _state_ is a substitition and the next fresh variable.
 -}
 type alias State a =
     { substitution : Substitution a
-    , fresh : Variable
+    , fresh : Var
     }
 
 
@@ -81,7 +90,7 @@ mzero =
 walk : Term a -> Substitution a -> Term a
 walk term substitution =
     case term of
-        Var variable ->
+        Variable variable ->
             case Dict.get variable substitution of
                 Just value ->
                     walk value substitution
@@ -95,7 +104,7 @@ walk term substitution =
 
 {-| _extend_ a substitution with a new binding
 -}
-extend : Variable -> Term a -> Substitution a -> Substitution a
+extend : Var -> Term a -> Substitution a -> Substitution a
 extend variable term substitution =
     Dict.insert variable term substitution
 
@@ -112,7 +121,7 @@ unify left right substitution =
             walk right substitution
     in
     case ( leftWalk, rightWalk ) of
-        ( Var leftVariable, Var rightVariable ) ->
+        ( Variable leftVariable, Variable rightVariable ) ->
             if leftVariable == rightVariable then
                 Just substitution
 
@@ -126,10 +135,10 @@ unify left right substitution =
             else
                 Nothing
 
-        ( Var leftVariable, _ ) ->
+        ( Variable leftVariable, _ ) ->
             Just (extend leftVariable rightWalk substitution)
 
-        ( _, Var rightVariable ) ->
+        ( _, Variable rightVariable ) ->
             Just (extend rightVariable leftWalk substitution)
 
         ( Pair ( leftFirst, leftSecond ), Pair ( rightFirst, rightSecond ) ) ->
@@ -203,7 +212,7 @@ identical left right =
 -}
 callFresh : (Term a -> Goal a) -> Goal a
 callFresh f =
-    \state -> f (Var state.fresh) { state | fresh = state.fresh + 1 }
+    \state -> f (Variable state.fresh) { state | fresh = state.fresh + 1 }
 
 
 {-| create a goal that succeeds when either of the goals succeeds.
