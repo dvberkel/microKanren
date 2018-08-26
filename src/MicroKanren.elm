@@ -168,8 +168,8 @@ mplus left right =
         Empty ->
             right
 
-        Immature followingStream ->
-            Immature (\_ -> mplus right (followingStream ()))
+        Immature lazyStream ->
+            Immature (\_ -> mplus right (lazyStream ()))
 
         Mature state followingStream ->
             Mature state (mplus right followingStream)
