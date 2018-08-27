@@ -1,10 +1,11 @@
 module Main exposing (main)
 
 import Browser
+import Dict
 import Html
 import Html.Attributes as Attribute
 import Html.Events as Event
-import MicroKanren exposing (Goal, State, Stream(..), Term(..), callFresh, emptyState, identical)
+import MicroKanren exposing (Goal, State, Stream(..), Term(..), Var, callFresh, emptyState, identical)
 
 
 main =
@@ -88,21 +89,56 @@ view model =
         ]
 
 
-viewState : State a -> Html.Html Message
+viewState : State a -> Html.Html msg
 viewState state =
     Html.div [ Attribute.class "state" ]
-        [ Html.div [ Attribute.class "fresh" ]
-            [ Html.span [] [ Html.text (String.fromInt state.fresh) ]
+        [ Html.span [ Attribute.class "fresh" ] [ Html.text (String.fromInt state.fresh) ]
+        , Html.div
+            [ Attribute.class "substitution" ]
+            (List.map
+                viewBinding
+                (Dict.toList state.substitution)
+            )
+        ]
+
+
+viewBinding : ( Var, Term a ) -> Html.Html msg
+viewBinding ( key, value ) =
+    Html.div [ Attribute.class "binding" ]
+        [ Html.span [ Attribute.class "key" ] [ Html.text (String.fromInt key) ]
+        , Html.span [ Attribute.class "bind" ] [ Html.text "↦" ]
+        , Html.span [ Attribute.class "value" ]
+            [ Html.text (termToString Debug.toString value)
             ]
         ]
+
+
+termToString : (a -> String) -> Term a -> String
+termToString stringify term =
+    case term of
+        Variable variable ->
+            String.fromInt variable
+
+        Value value ->
+            stringify value
+
+        Pair ( left, right ) ->
+            "["
+                ++ termToString (stringify) left
+                ++ ","
+                ++ termToString (stringify) right
+                ++ "]"
 
 
 viewStream : Stream a -> Html.Html Message
 viewStream stream =
     let
         button =
-            Html.button [ Attribute.class "pull",
-                        Event.onClick TakeFromStream] [ Html.text "🡆"]
+            Html.button
+                [ Attribute.class "pull"
+                , Event.onClick TakeFromStream
+                ]
+                [ Html.text "🡆" ]
 
         content =
             case stream of
@@ -110,12 +146,13 @@ viewStream stream =
                     [ Html.span [] [ Html.text "empty" ] ]
 
                 Immature _ ->
-                    [ Html.span [] [ Html.text "immature"]
-                    , button]
+                    [ Html.span [] [ Html.text "immature" ]
+                    , button
+                    ]
 
                 Mature _ _ ->
-                    [ Html.span [] [Html.text "mature"]
-                    , button]
-
+                    [ Html.span [] [ Html.text "mature" ]
+                    , button
+                    ]
     in
-        Html.div [ Attribute.class "stream" ] content
+    Html.div [ Attribute.class "stream" ] content
