@@ -6,9 +6,10 @@ module MicroKanren exposing
     , Term(..)
     , Var
     , callFresh
-    , identical
-    , disjoin
     , conjoin
+    , disjoin
+    , identical
+    , emptyState
     )
 
 {-| μKanren provides an implementation of the
@@ -35,7 +36,7 @@ type Term a
     | Pair ( Term a, Term a )
 
 
-{-| A _substition_ binds variables to terms.
+{-| A _substitution_ binds variables to terms.
 -}
 type alias Substitution a =
     Dict.Dict Var (Term a)
@@ -46,6 +47,15 @@ type alias Substitution a =
 type alias State a =
     { substitution : Substitution a
     , fresh : Var
+    }
+
+
+{-| The empty state is a common starting point for many μKanren programs.
+-}
+emptyState : State a
+emptyState =
+    { substitution = Dict.empty
+    , fresh = 0
     }
 
 
