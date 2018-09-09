@@ -59,7 +59,7 @@ emptyState =
     }
 
 
-{-| A sequences of states is a _sequence_.
+{-| A sequences of states is a _stream_.
 
 It could in principle be infinite.
 
