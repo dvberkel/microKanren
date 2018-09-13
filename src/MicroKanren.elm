@@ -42,7 +42,7 @@ type alias Substitution a =
     Dict.Dict Var (Term a)
 
 
-{-| A _state_ is a substitition and the next fresh variable.
+{-| A _state_ is a substitution and the next fresh variable.
 -}
 type alias State a =
     { substitution : Substitution a
