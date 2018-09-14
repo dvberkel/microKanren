@@ -27,12 +27,21 @@ main =
 
 
 type alias Model a =
+    List (StreamModel a)
+
+
+type alias StreamModel a =
     { seenStates : List (State a)
     , stream : Stream a
     }
 
 
-modelFromGoal : Goal a -> Model a
+modelFromGoals : List (Goal a) -> Model a
+modelFromGoals goals =
+    List.map modelFromGoal goals
+
+
+modelFromGoal : Goal a -> StreamModel a
 modelFromGoal goal =
     { seenStates = []
     , stream = goal emptyState
@@ -44,7 +53,7 @@ modelFromGoal goal =
 
 
 type Message
-    = TakeFromStream
+    = TakeFromStream Int
 
 
 update : Message -> Model a -> Model a
@@ -52,21 +61,51 @@ update message model =
     let
         nextModel =
             case message of
-                TakeFromStream ->
-                    case model.stream of
-                        Empty ->
-                            model
-
-                        Immature lazyStream ->
-                            { model | stream = lazyStream () }
-
-                        Mature state followingStream ->
-                            { model
-                                | seenStates = List.append model.seenStates [ state ]
-                                , stream = followingStream
-                            }
+                TakeFromStream index ->
+                    updateInPlace next model index
     in
     nextModel
+
+
+next : StreamModel a -> StreamModel a
+next model =
+    case model.stream of
+        Empty ->
+            model
+
+        Immature lazyStream ->
+            { model | stream = lazyStream () }
+
+        Mature state followingStream ->
+            { model
+                | seenStates = List.append model.seenStates [ state ]
+                , stream = followingStream
+            }
+
+
+updateInPlace : (StreamModel a -> StreamModel a) -> Model a -> Int -> Model a
+updateInPlace f model index =
+    if 0 <= index && index < List.length model then
+        let
+            prefix =
+                List.take index model
+
+            maybeStreamModel =
+                List.drop index model
+                    |> List.head
+
+            suffix =
+                List.drop (index + 1) model
+
+            updated =
+                maybeStreamModel
+                    |> Maybe.map (\streamModel -> [ f streamModel ])
+                    |> Maybe.withDefault []
+        in
+        prefix ++ updated ++ suffix
+
+    else
+        model
 
 
 
@@ -75,7 +114,16 @@ update message model =
 
 view : Model a -> Html.Html Message
 view model =
-    Html.div [ Attribute.class "microkanren" ]
+    let
+        streamModels =
+            List.indexedMap viewStreamModel model
+    in
+    Html.div [ Attribute.class "microKanren" ] streamModels
+
+
+viewStreamModel : Int -> StreamModel a -> Html.Html Message
+viewStreamModel index model =
+    Html.div [ Attribute.class "stream" ]
         [ Html.div
             [ Attribute.classList
                 [ ( "states", True )
@@ -86,7 +134,7 @@ view model =
                 viewState
                 model.seenStates
             )
-        , viewStream model.stream
+        , viewStream index model.stream
         ]
 
 
@@ -125,19 +173,19 @@ termToString stringify term =
 
         Pair ( left, right ) ->
             "["
-                ++ termToString (stringify) left
+                ++ termToString stringify left
                 ++ ","
-                ++ termToString (stringify) right
+                ++ termToString stringify right
                 ++ "]"
 
 
-viewStream : Stream a -> Html.Html Message
-viewStream stream =
+viewStream : Int -> Stream a -> Html.Html Message
+viewStream index stream =
     let
         button =
             Html.button
                 [ Attribute.class "pull"
-                , Event.onClick TakeFromStream
+                , Event.onClick (TakeFromStream index)
                 ]
                 [ Html.text "🡆" ]
 
