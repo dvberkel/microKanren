@@ -11,8 +11,10 @@ import MicroKanren.Kernel exposing (Goal, State, Stream(..), Term(..), Var, call
 main =
     let
         goals =
-            [ (\term -> identical term (Value 5))
-                |> callFresh
+            [ ( "≡ t 5"
+              , (\term -> identical term (Value 5))
+                    |> callFresh
+              )
             ]
     in
     Browser.sandbox
@@ -31,19 +33,21 @@ type alias Model a =
 
 
 type alias StreamModel a =
-    { seenStates : List (State a)
+    { name : String
+    , seenStates : List (State a)
     , stream : Stream a
     }
 
 
-modelFromGoals : List (Goal a) -> Model a
+modelFromGoals : List ( String, Goal a ) -> Model a
 modelFromGoals goals =
     List.map modelFromGoal goals
 
 
-modelFromGoal : Goal a -> StreamModel a
-modelFromGoal goal =
-    { seenStates = []
+modelFromGoal : ( String, Goal a ) -> StreamModel a
+modelFromGoal ( name, goal ) =
+    { name = name
+    , seenStates = []
     , stream = goal emptyState
     }
 
@@ -124,7 +128,8 @@ view model =
 viewStreamModel : Int -> StreamModel a -> Html.Html Message
 viewStreamModel index model =
     Html.div [ Attribute.class "stream" ]
-        [ Html.div
+        [ Html.div [ Attribute.class "name" ] [ Html.span [] [ Html.text model.name ] ]
+        , Html.div
             [ Attribute.classList
                 [ ( "states", True )
                 , ( "seen", True )
