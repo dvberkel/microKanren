@@ -26,9 +26,9 @@ main =
                         )
                     )
               )
-            -- , ( "nat"
-            --   , callFresh nat
-            --   )
+            , ( "nat"
+              , callFresh nat
+              )
             ]
     in
     Browser.sandbox

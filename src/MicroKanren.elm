@@ -1,6 +1,6 @@
 module MicroKanren exposing (nat)
 
-import MicroKanren.Kernel exposing (Goal, Term(..), callFresh, disjoin, identical)
+import MicroKanren.Kernel exposing (Goal, Term(..), Stream(..), callFresh, disjoin, identical)
 
 
 {-| A goal that binds a variable to the natural numbers.
@@ -15,4 +15,4 @@ natFrom start =
     \term ->
         disjoin
             (identical term (Value start))
-            (natFrom (start + 1) term)
+            (\state -> Immature (\_ -> natFrom (start + 1) term state))
