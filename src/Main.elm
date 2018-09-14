@@ -5,6 +5,7 @@ import Dict
 import Html
 import Html.Attributes as Attribute
 import Html.Events as Event
+import MicroKanren exposing (nat)
 import MicroKanren.Kernel exposing (..)
 
 
@@ -12,8 +13,7 @@ main =
     let
         goals =
             [ ( "≡ t 5"
-              , (\term -> identical term (Value 5))
-                    |> callFresh
+              , callFresh (\term -> identical term (Value 5))
               )
             , ( "a and b"
               , conjoin
@@ -26,6 +26,9 @@ main =
                         )
                     )
               )
+            -- , ( "nat"
+            --   , callFresh nat
+            --   )
             ]
     in
     Browser.sandbox
