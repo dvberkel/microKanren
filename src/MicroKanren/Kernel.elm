@@ -8,8 +8,8 @@ module MicroKanren.Kernel exposing
     , callFresh
     , conjoin
     , disjoin
-    , identical
     , emptyState
+    , identical
     )
 
 {-| μKanren provides an implementation of the
@@ -20,6 +20,41 @@ module MicroKanren.Kernel exposing
 -}
 
 import Dict
+
+
+{-| a μKanren program proceeds through the application of a _goal_ to a state.
+
+Goals are often understood by analogy to predicates. Whereas the application of
+a predicate to an element of its domain can be either true or false, a goal
+pursued in a given state can either succeed or fail . When it succeeds it
+returns a non-empty stream, otherwise it fails and returns an empty stream.
+
+-}
+type alias Goal a =
+    State a -> Stream a
+
+
+{-| A sequences of states is a _stream_.
+
+A goal's success may result in a sequence of (enlarged) states, which we term a
+stream. The result of a μKanren program is a stream of satisfying states. The
+stream may be finite or infinite, as there may be finite or infinitely many
+satisfying states
+
+-}
+type Stream a
+    = Empty
+    | Immature (() -> Stream a)
+    | Mature (State a) (Stream a)
+
+
+{-| A state is a pair of a substitution (represented as an association list) and
+a non-negative integer representing a fresh-variable counter.
+-}
+type alias State a =
+    { substitution : Substitution a
+    , fresh : Var
+    }
 
 
 {-| _Variable_s are identified by integers.
@@ -42,42 +77,19 @@ type alias Substitution a =
     Dict.Dict Var (Term a)
 
 
-{-| A _state_ is a substitution and the next fresh variable.
--}
-type alias State a =
-    { substitution : Substitution a
-    , fresh : Var
-    }
-
-
 {-| The empty state is a common starting point for many μKanren programs.
+
+While in principle the user of the system may begin with any state, in practice
+the user almost always begins with empty-state . empty-state is a user-level
+alias for a state virtually devoid of information: the substitution is empty,
+and the first variable will be indexed at 0.
+
 -}
 emptyState : State a
 emptyState =
     { substitution = Dict.empty
     , fresh = 0
     }
-
-
-{-| A sequences of states is a _stream_.
-
-It could in principle be infinite.
-
--}
-type Stream a
-    = Empty
-    | Immature (() -> Stream a)
-    | Mature (State a) (Stream a)
-
-
-{-| a μKanren program proceeds through the application of a _goal_ to a state.
-
-When it succeeds it returns a non-empty stream, otherwise it fails and returns
-an empty stream.
-
--}
-type alias Goal a =
-    State a -> Stream a
 
 
 {-| _unit_ is the trivial goal.
