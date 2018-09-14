@@ -1,4 +1,4 @@
-module MicroKanren exposing
+module MicroKanren.Kernel exposing
     ( Goal
     , State
     , Stream(..)

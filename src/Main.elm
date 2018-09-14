@@ -5,17 +5,18 @@ import Dict
 import Html
 import Html.Attributes as Attribute
 import Html.Events as Event
-import MicroKanren exposing (Goal, State, Stream(..), Term(..), Var, callFresh, emptyState, identical)
+import MicroKanren.Kernel exposing (Goal, State, Stream(..), Term(..), Var, callFresh, emptyState, identical)
 
 
 main =
     let
-        goal =
-            (\term -> identical term (Value 5))
+        goals =
+            [ (\term -> identical term (Value 5))
                 |> callFresh
+            ]
     in
     Browser.sandbox
-        { init = modelFromGoal goal
+        { init = modelFromGoals goals
         , update = update
         , view = view
         }
