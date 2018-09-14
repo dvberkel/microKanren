@@ -5,7 +5,7 @@ import Dict
 import Html
 import Html.Attributes as Attribute
 import Html.Events as Event
-import MicroKanren.Kernel exposing (Goal, State, Stream(..), Term(..), Var, callFresh, emptyState, identical)
+import MicroKanren.Kernel exposing (..)
 
 
 main =
@@ -14,6 +14,17 @@ main =
             [ ( "≡ t 5"
               , (\term -> identical term (Value 5))
                     |> callFresh
+              )
+            , ( "a and b"
+              , conjoin
+                    (callFresh (\a -> identical a (Value 7)))
+                    (callFresh
+                        (\b ->
+                            disjoin
+                                (identical b (Value 5))
+                                (identical b (Value 6))
+                        )
+                    )
               )
             ]
     in
