@@ -10,6 +10,7 @@ module MicroKanren.Kernel exposing
     , disjoin
     , emptyState
     , identical
+    , unit
     )
 
 {-| μKanren provides an implementation of the
@@ -263,6 +264,7 @@ returned. If instead the stream contains a state and potentially more, then g is
 invoked on the first state. The stream which is the result of that invocation is
 merged to a stream containing the invocation of the rest of the $ passed in the
 second goal g.
+
 -}
 bind : Stream a -> Goal a -> Stream a
 bind stream goal =

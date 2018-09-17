@@ -7,6 +7,7 @@ import Html.Attributes as Attribute
 import Html.Events as Event
 import MicroKanren exposing (nat)
 import MicroKanren.Kernel exposing (..)
+import MicroKanren.UserLevel exposing (..)
 
 
 main =
@@ -28,6 +29,18 @@ main =
               )
             , ( "nat"
               , callFresh nat
+              )
+            , ( "conj (nat x) (nat y) (identical x y)"
+              , callFresh
+                    (\x ->
+                        callFresh
+                            (\y ->
+                                conj [
+                                     \_ -> nat x,
+                                     \_ -> nat y,
+                                     \_ -> (identical x y) ]
+                            )
+                    )
               )
             ]
     in
