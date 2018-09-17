@@ -32,3 +32,14 @@ conj goals =
         [] -> Kernel.unit
 
         goal :: tailGoals -> Kernel.conjoin (zzz goal) (conj tailGoals)
+
+{-| Too, manually nesting calls to conj and disj can quickly grow tiresome. The
+macros conj and disj introduced below provide the conjoin and disjoin of one or more
+goals.
+-}
+disj : List (() -> Kernel.Goal a) -> Kernel.Goal a
+disj goals =
+    case goals of
+        [] -> Kernel.unit
+
+        goal :: tailGoals -> Kernel.disjoin (zzz goal) (disj tailGoals)
