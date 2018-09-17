@@ -35,10 +35,11 @@ main =
                     (\x ->
                         callFresh
                             (\y ->
-                                conj [
-                                     \_ -> nat x,
-                                     \_ -> nat y,
-                                     \_ -> (identical x y) ]
+                                conj
+                                    [ \_ -> nat x
+                                    , \_ -> nat y
+                                    , \_ -> identical x y
+                                    ]
                             )
                     )
               )
@@ -100,18 +101,19 @@ update message model =
 
 next : StreamModel a -> StreamModel a
 next model =
-    case model.stream of
-        Empty ->
-            model
-
-        Immature lazyStream ->
-            { model | stream = lazyStream () }
-
+    let
+        stream =
+            pull model.stream
+    in
+    case stream of
         Mature state followingStream ->
             { model
                 | seenStates = List.append model.seenStates [ state ]
                 , stream = followingStream
             }
+
+        _ ->
+            { model | stream = Empty }
 
 
 updateInPlace : (StreamModel a -> StreamModel a) -> Model a -> Int -> Model a
@@ -216,7 +218,7 @@ viewStream index stream =
     let
         button =
             Html.button
-                [ Attribute.class "pull"
+                [ Attribute.class "take"
                 , Event.onClick (TakeFromStream index)
                 ]
                 [ Html.text "🡆" ]
