@@ -13,7 +13,7 @@ website: ${TARGET}
 ${TARGET}: ${SOURCE} ${TARGET_DIR}
 	elm make $<
 	mv ${TARGET_FILE} $@
-	
+
 
 ${TARGET_DIR}:
 	mkdir $@
