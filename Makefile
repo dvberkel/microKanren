@@ -3,7 +3,7 @@
 SOURCE_DIR = src
 SOURCE_FILE = Main
 SOURCE = ${SOURCE_DIR}/${SOURCE_FILE}.elm
-TARGET_DIR = docs
+TARGET_DIR = docs/demo
 TARGET_FILE = index.html
 TARGET = ${TARGET_DIR}/${TARGET_FILE}
 
@@ -16,7 +16,7 @@ ${TARGET}: ${SOURCE} ${TARGET_DIR}
 
 
 ${TARGET_DIR}:
-	mkdir $@
+	mkdir -p $@
 
 clean:
 	rm -rf ${TARGET_DIR}
