@@ -132,6 +132,11 @@ advance ((Presentation data) as original) =
         original
 
 
+currentIndex : Presentation -> Int
+currentIndex (Presentation { preceding }) =
+    1 + List.length preceding
+
+
 slideCount : Presentation -> Int
 slideCount (Presentation { preceding, current, following }) =
     List.length preceding + 1 + List.length following
@@ -158,7 +163,8 @@ viewInfo model =
 viewCount : Model -> Html msg
 viewCount model =
     Html.div [ Attribute.class "count" ]
-        [ Html.span [ Attribute.class "total" ] [ Html.text <| String.fromInt <| slideCount model ]
+        [ Html.span [ Attribute.class "index" ] [ Html.text <| String.fromInt <| currentIndex model ]
+        , Html.span [ Attribute.class "total" ] [ Html.text <| String.fromInt <| slideCount model ]
         ]
 
 
