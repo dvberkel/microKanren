@@ -13,40 +13,34 @@ import MicroKanren.UserLevel exposing (..)
 main =
     let
         goals =
-            [ ( "≡ t 5"
-              , callFresh (\term -> identical term (Value 5))
-              )
-            , ( "a and b"
-              , conjoin
-                    (callFresh (\a -> identical a (Value 7)))
-                    (callFresh
-                        (\b ->
-                            disjoin
-                                (identical b (Value 5))
-                                (identical b (Value 6))
+            [ modelFromGoal "≡ t 5" <| callFresh (\term -> identical term (Value 5))
+            , modelFromGoal "a and b" <|
+                conjoin
+                (callFresh (\a -> identical a (Value 7)))
+                (callFresh
+                    (\b ->
+                        disjoin
+                            (identical b (Value 5))
+                            (identical b (Value 6))
+                    )
+                )
+            , modelFromGoal "nat" <| callFresh nat
+            , modelFromGoal "conj (nat x) (nat y) (identical x y)" <|
+                callFresh
+                (\x ->
+                    callFresh
+                        (\y ->
+                            conj
+                                [ \_ -> nat x
+                                , \_ -> nat y
+                                , \_ -> identical x y
+                                ]
                         )
-                    )
-              )
-            , ( "nat"
-              , callFresh nat
-              )
-            , ( "conj (nat x) (nat y) (identical x y)"
-              , callFresh
-                    (\x ->
-                        callFresh
-                            (\y ->
-                                conj
-                                    [ \_ -> nat x
-                                    , \_ -> nat y
-                                    , \_ -> identical x y
-                                    ]
-                            )
-                    )
-              )
+                )
             ]
     in
     Browser.sandbox
-        { init = modelFromGoals goals
+        { init = goals
         , update = update
         , view = view
         }
@@ -67,13 +61,8 @@ type alias StreamModel a =
     }
 
 
-modelFromGoals : List ( String, Goal a ) -> Model a
-modelFromGoals goals =
-    List.map modelFromGoal goals
-
-
-modelFromGoal : ( String, Goal a ) -> StreamModel a
-modelFromGoal ( name, goal ) =
+modelFromGoal : String -> Goal a -> StreamModel a
+modelFromGoal name goal =
     { name = name
     , seenStates = []
     , stream = goal emptyState
@@ -122,10 +111,12 @@ updateInPlace f model target =
         map index item =
             if index == target then
                 f item
+
             else
                 item
     in
     List.indexedMap map model
+
 
 
 -- View
