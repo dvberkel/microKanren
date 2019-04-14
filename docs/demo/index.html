@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Main</title>
+  <title>Demo</title>
 </head>
 
 <body>
@@ -238,6 +238,87 @@ var _JsArray_appendN = F3(function(n, dest, source)
     }
 
     return result;
+});
+
+
+
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
+
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === elm$core$Basics$EQ ? 0 : ord === elm$core$Basics$LT ? -1 : 1;
+	}));
 });
 
 
@@ -705,87 +786,6 @@ function _Utils_ap(xs, ys)
 	}
 	return root;
 }
-
-
-
-var _List_Nil_UNUSED = { $: 0 };
-var _List_Nil = { $: '[]' };
-
-function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === elm$core$Basics$EQ ? 0 : ord === elm$core$Basics$LT ? -1 : 1;
-	}));
-});
 
 
 
@@ -4295,11 +4295,6 @@ function _Browser_load(url)
 		}
 	}));
 }
-var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
-var author$project$MicroKanren$Kernel$emptyState = {fresh: 0, substitution: elm$core$Dict$empty};
-var elm$core$Basics$EQ = {$: 'EQ'};
-var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var elm$core$Array$foldr = F3(
 	function (func, baseCase, _n0) {
@@ -4321,6 +4316,8 @@ var elm$core$Array$foldr = F3(
 			A3(elm$core$Elm$JsArray$foldr, func, baseCase, tail),
 			tree);
 	});
+var elm$core$Basics$EQ = {$: 'EQ'};
+var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$List$cons = _List_cons;
 var elm$core$Array$toList = function (array) {
 	return A3(elm$core$Array$foldr, elm$core$List$cons, _List_Nil, array);
@@ -4378,17 +4375,9 @@ var elm$core$Set$toList = function (_n0) {
 	var dict = _n0.a;
 	return elm$core$Dict$keys(dict);
 };
-var author$project$Main$modelFromGoal = function (_n0) {
-	var name = _n0.a;
-	var goal = _n0.b;
-	return {
-		name: name,
-		seenStates: _List_Nil,
-		stream: goal(author$project$MicroKanren$Kernel$emptyState)
-	};
-};
+var elm$core$Basics$eq = _Utils_equal;
+var elm$core$Basics$sub = _Basics_sub;
 var elm$core$Basics$add = _Basics_add;
-var elm$core$Basics$gt = _Utils_gt;
 var elm$core$List$foldl = F3(
 	function (func, acc, list) {
 		foldl:
@@ -4408,81 +4397,59 @@ var elm$core$List$foldl = F3(
 			}
 		}
 	});
-var elm$core$List$reverse = function (list) {
-	return A3(elm$core$List$foldl, elm$core$List$cons, _List_Nil, list);
+var elm$core$List$length = function (xs) {
+	return A3(
+		elm$core$List$foldl,
+		F2(
+			function (_n0, i) {
+				return i + 1;
+			}),
+		0,
+		xs);
 };
-var elm$core$List$foldrHelper = F4(
-	function (fn, acc, ctr, ls) {
-		if (!ls.b) {
-			return acc;
-		} else {
-			var a = ls.a;
-			var r1 = ls.b;
-			if (!r1.b) {
-				return A2(fn, a, acc);
+var elm$core$List$map2 = _List_map2;
+var elm$core$Basics$le = _Utils_le;
+var elm$core$List$rangeHelp = F3(
+	function (lo, hi, list) {
+		rangeHelp:
+		while (true) {
+			if (_Utils_cmp(lo, hi) < 1) {
+				var $temp$lo = lo,
+					$temp$hi = hi - 1,
+					$temp$list = A2(elm$core$List$cons, hi, list);
+				lo = $temp$lo;
+				hi = $temp$hi;
+				list = $temp$list;
+				continue rangeHelp;
 			} else {
-				var b = r1.a;
-				var r2 = r1.b;
-				if (!r2.b) {
-					return A2(
-						fn,
-						a,
-						A2(fn, b, acc));
-				} else {
-					var c = r2.a;
-					var r3 = r2.b;
-					if (!r3.b) {
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(fn, c, acc)));
-					} else {
-						var d = r3.a;
-						var r4 = r3.b;
-						var res = (ctr > 500) ? A3(
-							elm$core$List$foldl,
-							fn,
-							acc,
-							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
-						return A2(
-							fn,
-							a,
-							A2(
-								fn,
-								b,
-								A2(
-									fn,
-									c,
-									A2(fn, d, res))));
-					}
-				}
+				return list;
 			}
 		}
 	});
-var elm$core$List$foldr = F3(
-	function (fn, acc, ls) {
-		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
+var elm$core$List$range = F2(
+	function (lo, hi) {
+		return A3(elm$core$List$rangeHelp, lo, hi, _List_Nil);
 	});
-var elm$core$List$map = F2(
+var elm$core$List$indexedMap = F2(
 	function (f, xs) {
 		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
+			elm$core$List$map2,
+			f,
+			A2(
+				elm$core$List$range,
+				0,
+				elm$core$List$length(xs) - 1),
 			xs);
 	});
-var author$project$Main$modelFromGoals = function (goals) {
-	return A2(elm$core$List$map, author$project$Main$modelFromGoal, goals);
-};
+var author$project$Demo$updateInPlace = F3(
+	function (f, model, target) {
+		var map = F2(
+			function (index, item) {
+				return _Utils_eq(index, target) ? f(item) : item;
+			});
+		return A2(elm$core$List$indexedMap, map, model);
+	});
+var author$project$MicroKanren$TakeFromStream = {$: 'TakeFromStream'};
 var author$project$MicroKanren$Kernel$Empty = {$: 'Empty'};
 var author$project$MicroKanren$UserLevel$pull = function (stream) {
 	pull:
@@ -4497,271 +4464,49 @@ var author$project$MicroKanren$UserLevel$pull = function (stream) {
 		}
 	}
 };
-var elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
-		}
-	});
-var author$project$Main$next = function (model) {
-	var stream = author$project$MicroKanren$UserLevel$pull(model.stream);
-	if (stream.$ === 'Mature') {
-		var state = stream.a;
-		var followingStream = stream.b;
-		return _Utils_update(
-			model,
-			{
-				seenStates: A2(
-					elm$core$List$append,
-					model.seenStates,
-					_List_fromArray(
-						[state])),
-				stream: followingStream
-			});
-	} else {
-		return _Utils_update(
-			model,
-			{stream: author$project$MicroKanren$Kernel$Empty});
-	}
-};
-var elm$core$Basics$and = _Basics_and;
-var elm$core$Basics$apR = F2(
-	function (x, f) {
-		return f(x);
-	});
 var elm$core$Basics$append = _Utils_append;
-var elm$core$Basics$le = _Utils_le;
-var elm$core$Basics$lt = _Utils_lt;
-var elm$core$Basics$sub = _Basics_sub;
-var elm$core$List$drop = F2(
-	function (n, list) {
-		drop:
-		while (true) {
-			if (n <= 0) {
-				return list;
-			} else {
-				if (!list.b) {
-					return list;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs;
-					n = $temp$n;
-					list = $temp$list;
-					continue drop;
-				}
-			}
+var author$project$MicroKanren$update = F2(
+	function (_n0, model) {
+		var stream = author$project$MicroKanren$UserLevel$pull(model.stream);
+		if (stream.$ === 'Mature') {
+			var state = stream.a;
+			var followingStream = stream.b;
+			return _Utils_update(
+				model,
+				{
+					seenStates: _Utils_ap(
+						model.seenStates,
+						_List_fromArray(
+							[state])),
+					stream: followingStream
+				});
+		} else {
+			return _Utils_update(
+				model,
+				{stream: author$project$MicroKanren$Kernel$Empty});
 		}
 	});
+var author$project$Demo$update = F2(
+	function (message, model) {
+		var nextModel = function () {
+			var index = message.a;
+			return A3(
+				author$project$Demo$updateInPlace,
+				author$project$MicroKanren$update(author$project$MicroKanren$TakeFromStream),
+				model,
+				index);
+		}();
+		return nextModel;
+	});
+var author$project$Demo$TakeFromStream = function (a) {
+	return {$: 'TakeFromStream', a: a};
+};
 var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
 var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(x);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var elm$core$List$length = function (xs) {
-	return A3(
-		elm$core$List$foldl,
-		F2(
-			function (_n0, i) {
-				return i + 1;
-			}),
-		0,
-		xs);
-};
-var elm$core$List$takeReverse = F3(
-	function (n, list, kept) {
-		takeReverse:
-		while (true) {
-			if (n <= 0) {
-				return kept;
-			} else {
-				if (!list.b) {
-					return kept;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs,
-						$temp$kept = A2(elm$core$List$cons, x, kept);
-					n = $temp$n;
-					list = $temp$list;
-					kept = $temp$kept;
-					continue takeReverse;
-				}
-			}
-		}
-	});
-var elm$core$List$takeTailRec = F2(
-	function (n, list) {
-		return elm$core$List$reverse(
-			A3(elm$core$List$takeReverse, n, list, _List_Nil));
-	});
-var elm$core$List$takeFast = F3(
-	function (ctr, n, list) {
-		if (n <= 0) {
-			return _List_Nil;
-		} else {
-			var _n0 = _Utils_Tuple2(n, list);
-			_n0$1:
-			while (true) {
-				_n0$5:
-				while (true) {
-					if (!_n0.b.b) {
-						return list;
-					} else {
-						if (_n0.b.b.b) {
-							switch (_n0.a) {
-								case 1:
-									break _n0$1;
-								case 2:
-									var _n2 = _n0.b;
-									var x = _n2.a;
-									var _n3 = _n2.b;
-									var y = _n3.a;
-									return _List_fromArray(
-										[x, y]);
-								case 3:
-									if (_n0.b.b.b.b) {
-										var _n4 = _n0.b;
-										var x = _n4.a;
-										var _n5 = _n4.b;
-										var y = _n5.a;
-										var _n6 = _n5.b;
-										var z = _n6.a;
-										return _List_fromArray(
-											[x, y, z]);
-									} else {
-										break _n0$5;
-									}
-								default:
-									if (_n0.b.b.b.b && _n0.b.b.b.b.b) {
-										var _n7 = _n0.b;
-										var x = _n7.a;
-										var _n8 = _n7.b;
-										var y = _n8.a;
-										var _n9 = _n8.b;
-										var z = _n9.a;
-										var _n10 = _n9.b;
-										var w = _n10.a;
-										var tl = _n10.b;
-										return (ctr > 1000) ? A2(
-											elm$core$List$cons,
-											x,
-											A2(
-												elm$core$List$cons,
-												y,
-												A2(
-													elm$core$List$cons,
-													z,
-													A2(
-														elm$core$List$cons,
-														w,
-														A2(elm$core$List$takeTailRec, n - 4, tl))))) : A2(
-											elm$core$List$cons,
-											x,
-											A2(
-												elm$core$List$cons,
-												y,
-												A2(
-													elm$core$List$cons,
-													z,
-													A2(
-														elm$core$List$cons,
-														w,
-														A3(elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
-									} else {
-										break _n0$5;
-									}
-							}
-						} else {
-							if (_n0.a === 1) {
-								break _n0$1;
-							} else {
-								break _n0$5;
-							}
-						}
-					}
-				}
-				return list;
-			}
-			var _n1 = _n0.b;
-			var x = _n1.a;
-			return _List_fromArray(
-				[x]);
-		}
-	});
-var elm$core$List$take = F2(
-	function (n, list) {
-		return A3(elm$core$List$takeFast, 0, n, list);
-	});
-var elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return elm$core$Maybe$Nothing;
-		}
-	});
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var author$project$Main$updateInPlace = F3(
-	function (f, model, index) {
-		if ((0 <= index) && (_Utils_cmp(
-			index,
-			elm$core$List$length(model)) < 0)) {
-			var suffix = A2(elm$core$List$drop, index + 1, model);
-			var prefix = A2(elm$core$List$take, index, model);
-			var maybeStreamModel = elm$core$List$head(
-				A2(elm$core$List$drop, index, model));
-			var updated = A2(
-				elm$core$Maybe$withDefault,
-				_List_Nil,
-				A2(
-					elm$core$Maybe$map,
-					function (streamModel) {
-						return _List_fromArray(
-							[
-								f(streamModel)
-							]);
-					},
-					maybeStreamModel));
-			return _Utils_ap(
-				prefix,
-				_Utils_ap(updated, suffix));
-		} else {
-			return model;
-		}
-	});
-var author$project$Main$update = F2(
-	function (message, model) {
-		var nextModel = function () {
-			var index = message.a;
-			return A3(author$project$Main$updateInPlace, author$project$Main$next, model, index);
-		}();
-		return nextModel;
-	});
 var elm$core$String$fromInt = _String_fromNumber;
-var author$project$Main$termToString = F2(
+var author$project$MicroKanren$termToString = F2(
 	function (stringify, term) {
 		switch (term.$) {
 			case 'Variable':
@@ -4774,10 +4519,9 @@ var author$project$Main$termToString = F2(
 				var _n1 = term.a;
 				var left = _n1.a;
 				var right = _n1.b;
-				return '[' + (A2(author$project$Main$termToString, stringify, left) + (',' + (A2(author$project$Main$termToString, stringify, right) + ']')));
+				return '[' + (A2(author$project$MicroKanren$termToString, stringify, left) + (',' + (A2(author$project$MicroKanren$termToString, stringify, right) + ']')));
 		}
 	});
-var elm$core$Debug$toString = _Debug_toString;
 var elm$core$Basics$identity = function (x) {
 	return x;
 };
@@ -4813,6 +4557,9 @@ var elm$core$Array$SubTree = function (a) {
 	return {$: 'SubTree', a: a};
 };
 var elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
+var elm$core$List$reverse = function (list) {
+	return A3(elm$core$List$foldl, elm$core$List$cons, _List_Nil, list);
+};
 var elm$core$Array$compressNodes = F2(
 	function (nodes, acc) {
 		compressNodes:
@@ -4835,7 +4582,10 @@ var elm$core$Array$compressNodes = F2(
 			}
 		}
 	});
-var elm$core$Basics$eq = _Utils_equal;
+var elm$core$Basics$apR = F2(
+	function (x, f) {
+		return f(x);
+	});
 var elm$core$Tuple$first = function (_n0) {
 	var x = _n0.a;
 	return x;
@@ -4861,6 +4611,7 @@ var elm$core$Basics$apL = F2(
 		return f(x);
 	});
 var elm$core$Basics$floor = _Basics_floor;
+var elm$core$Basics$gt = _Utils_gt;
 var elm$core$Basics$max = F2(
 	function (x, y) {
 		return (_Utils_cmp(x, y) > 0) ? x : y;
@@ -4891,6 +4642,7 @@ var elm$core$Array$builderToArray = F2(
 		}
 	});
 var elm$core$Basics$idiv = _Basics_idiv;
+var elm$core$Basics$lt = _Utils_lt;
 var elm$core$Elm$JsArray$initialize = _JsArray_initialize;
 var elm$core$Array$initializeHelp = F5(
 	function (fn, fromIndex, len, nodeList, tail) {
@@ -4951,6 +4703,7 @@ var elm$json$Json$Decode$Index = F2(
 var elm$json$Json$Decode$OneOf = function (a) {
 	return {$: 'OneOf', a: a};
 };
+var elm$core$Basics$and = _Basics_and;
 var elm$core$Basics$or = _Basics_or;
 var elm$core$Char$toCode = _Char_toCode;
 var elm$core$Char$isLower = function (_char) {
@@ -4971,39 +4724,6 @@ var elm$core$Char$isDigit = function (_char) {
 var elm$core$Char$isAlphaNum = function (_char) {
 	return elm$core$Char$isLower(_char) || (elm$core$Char$isUpper(_char) || elm$core$Char$isDigit(_char));
 };
-var elm$core$List$map2 = _List_map2;
-var elm$core$List$rangeHelp = F3(
-	function (lo, hi, list) {
-		rangeHelp:
-		while (true) {
-			if (_Utils_cmp(lo, hi) < 1) {
-				var $temp$lo = lo,
-					$temp$hi = hi - 1,
-					$temp$list = A2(elm$core$List$cons, hi, list);
-				lo = $temp$lo;
-				hi = $temp$hi;
-				list = $temp$list;
-				continue rangeHelp;
-			} else {
-				return list;
-			}
-		}
-	});
-var elm$core$List$range = F2(
-	function (lo, hi) {
-		return A3(elm$core$List$rangeHelp, lo, hi, _List_Nil);
-	});
-var elm$core$List$indexedMap = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$map2,
-			f,
-			A2(
-				elm$core$List$range,
-				0,
-				elm$core$List$length(xs) - 1),
-			xs);
-	});
 var elm$core$String$all = _String_all;
 var elm$core$String$join = F2(
 	function (sep, chunks) {
@@ -5156,86 +4876,154 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
-var author$project$Main$viewBinding = function (_n0) {
-	var key = _n0.a;
-	var value = _n0.b;
-	return A2(
-		elm$html$Html$div,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('binding')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$span,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('key')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(
-						elm$core$String$fromInt(key))
-					])),
-				A2(
-				elm$html$Html$span,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('bind')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text('↦')
-					])),
-				A2(
-				elm$html$Html$span,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('value')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(
-						A2(author$project$Main$termToString, elm$core$Debug$toString, value))
-					]))
-			]));
-};
-var author$project$Main$viewState = function (state) {
-	return A2(
-		elm$html$Html$div,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('state')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$span,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('fresh')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(
-						elm$core$String$fromInt(state.fresh))
-					])),
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('substitution')
-					]),
-				A2(
-					elm$core$List$map,
-					author$project$Main$viewBinding,
-					elm$core$Dict$toList(state.substitution)))
-			]));
-};
-var author$project$Main$TakeFromStream = function (a) {
-	return {$: 'TakeFromStream', a: a};
-};
+var author$project$MicroKanren$viewBinding = F2(
+	function (stringify, _n0) {
+		var key = _n0.a;
+		var value = _n0.b;
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('binding')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$span,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('key')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							elm$core$String$fromInt(key))
+						])),
+					A2(
+					elm$html$Html$span,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('bind')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text('↦')
+						])),
+					A2(
+					elm$html$Html$span,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('value')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							A2(author$project$MicroKanren$termToString, stringify, value))
+						]))
+				]));
+	});
+var elm$core$List$foldrHelper = F4(
+	function (fn, acc, ctr, ls) {
+		if (!ls.b) {
+			return acc;
+		} else {
+			var a = ls.a;
+			var r1 = ls.b;
+			if (!r1.b) {
+				return A2(fn, a, acc);
+			} else {
+				var b = r1.a;
+				var r2 = r1.b;
+				if (!r2.b) {
+					return A2(
+						fn,
+						a,
+						A2(fn, b, acc));
+				} else {
+					var c = r2.a;
+					var r3 = r2.b;
+					if (!r3.b) {
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(fn, c, acc)));
+					} else {
+						var d = r3.a;
+						var r4 = r3.b;
+						var res = (ctr > 500) ? A3(
+							elm$core$List$foldl,
+							fn,
+							acc,
+							elm$core$List$reverse(r4)) : A4(elm$core$List$foldrHelper, fn, acc, ctr + 1, r4);
+						return A2(
+							fn,
+							a,
+							A2(
+								fn,
+								b,
+								A2(
+									fn,
+									c,
+									A2(fn, d, res))));
+					}
+				}
+			}
+		}
+	});
+var elm$core$List$foldr = F3(
+	function (fn, acc, ls) {
+		return A4(elm$core$List$foldrHelper, fn, acc, 0, ls);
+	});
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
+var author$project$MicroKanren$viewState = F2(
+	function (stringify, state) {
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('state')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$span,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('fresh')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							elm$core$String$fromInt(state.fresh))
+						])),
+					A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('substitution')
+						]),
+					A2(
+						elm$core$List$map,
+						author$project$MicroKanren$viewBinding(stringify),
+						elm$core$Dict$toList(state.substitution)))
+				]));
+	});
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -5254,67 +5042,65 @@ var elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		elm$json$Json$Decode$succeed(msg));
 };
-var author$project$Main$viewStream = F2(
-	function (index, stream) {
-		var button = A2(
-			elm$html$Html$button,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$class('take'),
-					elm$html$Html$Events$onClick(
-					author$project$Main$TakeFromStream(index))
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text('🡆')
-				]));
-		var content = function () {
-			switch (stream.$) {
-				case 'Empty':
-					return _List_fromArray(
-						[
-							A2(
-							elm$html$Html$span,
-							_List_Nil,
-							_List_fromArray(
-								[
-									elm$html$Html$text('empty')
-								]))
-						]);
-				case 'Immature':
-					return _List_fromArray(
-						[
-							A2(
-							elm$html$Html$span,
-							_List_Nil,
-							_List_fromArray(
-								[
-									elm$html$Html$text('immature')
-								])),
-							button
-						]);
-				default:
-					return _List_fromArray(
-						[
-							A2(
-							elm$html$Html$span,
-							_List_Nil,
-							_List_fromArray(
-								[
-									elm$html$Html$text('mature')
-								])),
-							button
-						]);
-			}
-		}();
-		return A2(
-			elm$html$Html$div,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$class('stream')
-				]),
-			content);
-	});
+var author$project$MicroKanren$viewStream = function (stream) {
+	var button = A2(
+		elm$html$Html$button,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('take'),
+				elm$html$Html$Events$onClick(author$project$MicroKanren$TakeFromStream)
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('🡆')
+			]));
+	var content = function () {
+		switch (stream.$) {
+			case 'Empty':
+				return _List_fromArray(
+					[
+						A2(
+						elm$html$Html$span,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('empty')
+							]))
+					]);
+			case 'Immature':
+				return _List_fromArray(
+					[
+						A2(
+						elm$html$Html$span,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('immature')
+							])),
+						button
+					]);
+			default:
+				return _List_fromArray(
+					[
+						A2(
+						elm$html$Html$span,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('mature')
+							])),
+						button
+					]);
+		}
+	}();
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('stream')
+			]),
+		content);
+};
 var elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5340,8 +5126,8 @@ var elm$html$Html$Attributes$classList = function (classes) {
 				elm$core$Tuple$first,
 				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
 };
-var author$project$Main$viewStreamModel = F2(
-	function (index, model) {
+var author$project$MicroKanren$view = F2(
+	function (stringify, model) {
 		return A2(
 			elm$html$Html$div,
 			_List_fromArray(
@@ -5377,12 +5163,33 @@ var author$project$Main$viewStreamModel = F2(
 									_Utils_Tuple2('seen', true)
 								]))
 						]),
-					A2(elm$core$List$map, author$project$Main$viewState, model.seenStates)),
-					A2(author$project$Main$viewStream, index, model.stream)
+					A2(
+						elm$core$List$map,
+						author$project$MicroKanren$viewState(stringify),
+						model.seenStates)),
+					author$project$MicroKanren$viewStream(model.stream)
 				]));
 	});
-var author$project$Main$view = function (model) {
-	var streamModels = A2(elm$core$List$indexedMap, author$project$Main$viewStreamModel, model);
+var elm$core$Debug$toString = _Debug_toString;
+var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
+var author$project$Demo$view = function (model) {
+	var map = F2(
+		function (index, streamView) {
+			return A2(
+				elm$html$Html$map,
+				function (_n0) {
+					return author$project$Demo$TakeFromStream(index);
+				},
+				streamView);
+		});
+	var streamModels = A2(
+		elm$core$List$indexedMap,
+		map,
+		A2(
+			elm$core$List$map,
+			author$project$MicroKanren$view(elm$core$Debug$toString),
+			model));
 	return A2(
 		elm$html$Html$div,
 		_List_fromArray(
@@ -5391,8 +5198,32 @@ var author$project$Main$view = function (model) {
 			]),
 		streamModels);
 };
+var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
+var author$project$MicroKanren$Kernel$emptyState = {fresh: 0, substitution: elm$core$Dict$empty};
+var author$project$MicroKanren$streamModelFromGoal = F2(
+	function (name, goal) {
+		return {
+			name: name,
+			seenStates: _List_Nil,
+			stream: goal(author$project$MicroKanren$Kernel$emptyState)
+		};
+	});
 var author$project$MicroKanren$Kernel$Value = function (a) {
 	return {$: 'Value', a: a};
+};
+var author$project$MicroKanren$Kernel$Variable = function (a) {
+	return {$: 'Variable', a: a};
+};
+var author$project$MicroKanren$Kernel$callFresh = function (f) {
+	return function (state) {
+		return A2(
+			f,
+			author$project$MicroKanren$Kernel$Variable(state.fresh),
+			_Utils_update(
+				state,
+				{fresh: state.fresh + 1}));
+	};
 };
 var author$project$MicroKanren$Kernel$Immature = function (a) {
 	return {$: 'Immature', a: a};
@@ -5424,6 +5255,40 @@ var author$project$MicroKanren$Kernel$mplus = F2(
 					A2(author$project$MicroKanren$Kernel$mplus, right, followingStream));
 		}
 	});
+var author$project$MicroKanren$Kernel$mzero = author$project$MicroKanren$Kernel$Empty;
+var author$project$MicroKanren$Kernel$bind = F2(
+	function (stream, goal) {
+		switch (stream.$) {
+			case 'Empty':
+				return author$project$MicroKanren$Kernel$mzero;
+			case 'Immature':
+				var lazyStream = stream.a;
+				return author$project$MicroKanren$Kernel$Immature(
+					function (_n1) {
+						return A2(
+							author$project$MicroKanren$Kernel$bind,
+							lazyStream(_Utils_Tuple0),
+							goal);
+					});
+			default:
+				var state = stream.a;
+				var followingStream = stream.b;
+				var goalStream = goal(state);
+				return A2(
+					author$project$MicroKanren$Kernel$mplus,
+					goalStream,
+					A2(author$project$MicroKanren$Kernel$bind, followingStream, goal));
+		}
+	});
+var author$project$MicroKanren$Kernel$conjoin = F2(
+	function (left, right) {
+		return function (state) {
+			return A2(
+				author$project$MicroKanren$Kernel$bind,
+				left(state),
+				right);
+		};
+	});
 var author$project$MicroKanren$Kernel$disjoin = F2(
 	function (left, right) {
 		return function (state) {
@@ -5433,7 +5298,6 @@ var author$project$MicroKanren$Kernel$disjoin = F2(
 				right(state));
 		};
 	});
-var author$project$MicroKanren$Kernel$mzero = author$project$MicroKanren$Kernel$Empty;
 var elm$core$Dict$Black = {$: 'Black'};
 var elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -5695,67 +5559,6 @@ var author$project$MicroKanren$UserLevel$zzz = function (goal) {
 			});
 	};
 };
-var author$project$MicroKanren$natFrom = function (start) {
-	return function (term) {
-		return A2(
-			author$project$MicroKanren$Kernel$disjoin,
-			A2(
-				author$project$MicroKanren$Kernel$identical,
-				term,
-				author$project$MicroKanren$Kernel$Value(start)),
-			author$project$MicroKanren$UserLevel$zzz(
-				function (_n0) {
-					return A2(author$project$MicroKanren$natFrom, start + 1, term);
-				}));
-	};
-};
-var author$project$MicroKanren$nat = author$project$MicroKanren$natFrom(0);
-var author$project$MicroKanren$Kernel$Variable = function (a) {
-	return {$: 'Variable', a: a};
-};
-var author$project$MicroKanren$Kernel$callFresh = function (f) {
-	return function (state) {
-		return A2(
-			f,
-			author$project$MicroKanren$Kernel$Variable(state.fresh),
-			_Utils_update(
-				state,
-				{fresh: state.fresh + 1}));
-	};
-};
-var author$project$MicroKanren$Kernel$bind = F2(
-	function (stream, goal) {
-		switch (stream.$) {
-			case 'Empty':
-				return author$project$MicroKanren$Kernel$mzero;
-			case 'Immature':
-				var lazyStream = stream.a;
-				return author$project$MicroKanren$Kernel$Immature(
-					function (_n1) {
-						return A2(
-							author$project$MicroKanren$Kernel$bind,
-							lazyStream(_Utils_Tuple0),
-							goal);
-					});
-			default:
-				var state = stream.a;
-				var followingStream = stream.b;
-				var goalStream = goal(state);
-				return A2(
-					author$project$MicroKanren$Kernel$mplus,
-					goalStream,
-					A2(author$project$MicroKanren$Kernel$bind, followingStream, goal));
-		}
-	});
-var author$project$MicroKanren$Kernel$conjoin = F2(
-	function (left, right) {
-		return function (state) {
-			return A2(
-				author$project$MicroKanren$Kernel$bind,
-				left(state),
-				right);
-		};
-	});
 var author$project$MicroKanren$UserLevel$conj = function (goals) {
 	if (!goals.b) {
 		return author$project$MicroKanren$Kernel$unit;
@@ -5768,6 +5571,21 @@ var author$project$MicroKanren$UserLevel$conj = function (goals) {
 			author$project$MicroKanren$UserLevel$conj(tailGoals));
 	}
 };
+var author$project$MicroKanren$Util$natFrom = function (start) {
+	return function (term) {
+		return A2(
+			author$project$MicroKanren$Kernel$disjoin,
+			A2(
+				author$project$MicroKanren$Kernel$identical,
+				term,
+				author$project$MicroKanren$Kernel$Value(start)),
+			author$project$MicroKanren$UserLevel$zzz(
+				function (_n0) {
+					return A2(author$project$MicroKanren$Util$natFrom, start + 1, term);
+				}));
+	};
+};
+var author$project$MicroKanren$Util$nat = author$project$MicroKanren$Util$natFrom(0);
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6016,10 +5834,11 @@ var elm$browser$Browser$sandbox = function (impl) {
 			view: impl.view
 		});
 };
-var author$project$Main$main = function () {
+var author$project$Demo$main = function () {
 	var goals = _List_fromArray(
 		[
-			_Utils_Tuple2(
+			A2(
+			author$project$MicroKanren$streamModelFromGoal,
 			'≡ t 5',
 			author$project$MicroKanren$Kernel$callFresh(
 				function (term) {
@@ -6028,7 +5847,8 @@ var author$project$Main$main = function () {
 						term,
 						author$project$MicroKanren$Kernel$Value(5));
 				})),
-			_Utils_Tuple2(
+			A2(
+			author$project$MicroKanren$streamModelFromGoal,
 			'a and b',
 			A2(
 				author$project$MicroKanren$Kernel$conjoin,
@@ -6052,10 +5872,12 @@ var author$project$Main$main = function () {
 								b,
 								author$project$MicroKanren$Kernel$Value(6)));
 					}))),
-			_Utils_Tuple2(
+			A2(
+			author$project$MicroKanren$streamModelFromGoal,
 			'nat',
-			author$project$MicroKanren$Kernel$callFresh(author$project$MicroKanren$nat)),
-			_Utils_Tuple2(
+			author$project$MicroKanren$Kernel$callFresh(author$project$MicroKanren$Util$nat)),
+			A2(
+			author$project$MicroKanren$streamModelFromGoal,
 			'conj (nat x) (nat y) (identical x y)',
 			author$project$MicroKanren$Kernel$callFresh(
 				function (x) {
@@ -6065,10 +5887,10 @@ var author$project$Main$main = function () {
 								_List_fromArray(
 									[
 										function (_n0) {
-										return author$project$MicroKanren$nat(x);
+										return author$project$MicroKanren$Util$nat(x);
 									},
 										function (_n1) {
-										return author$project$MicroKanren$nat(y);
+										return author$project$MicroKanren$Util$nat(y);
 									},
 										function (_n2) {
 										return A2(author$project$MicroKanren$Kernel$identical, x, y);
@@ -6078,16 +5900,12 @@ var author$project$Main$main = function () {
 				}))
 		]);
 	return elm$browser$Browser$sandbox(
-		{
-			init: author$project$Main$modelFromGoals(goals),
-			update: author$project$Main$update,
-			view: author$project$Main$view
-		});
+		{init: goals, update: author$project$Demo$update, view: author$project$Demo$view});
 }();
-_Platform_export({'Main':{'init':author$project$Main$main(
+_Platform_export({'Demo':{'init':author$project$Demo$main(
 	elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
 
-var app = Elm.Main.init({ node: document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49") });
+var app = Elm.Demo.init({ node: document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49") });
 if (document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49"))
 {
   document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49").innerText = 'This is a headless program, meaning there is nothing to show here.\n\nI started the program anyway though, and you can access it as `app` in the developer console.';
