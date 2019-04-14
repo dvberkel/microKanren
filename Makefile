@@ -1,22 +1,16 @@
-.PHONY: website clear
+.PHONY: clean
 
+DOCS = docs
+PRESENTATION_DIR = ${DOCS}/presentation
+PRESENTATION = ${PRESENTATION_DIR}/index.html
 SOURCE_DIR = src
-SOURCE_FILE = Main
-SOURCE = ${SOURCE_DIR}/${SOURCE_FILE}.elm
-TARGET_DIR = docs/demo
-TARGET_FILE = index.html
-TARGET = ${TARGET_DIR}/${TARGET_FILE}
+PRESENTATION_SOURCE = ${SOURCE_DIR}/Presentation.elm
 
-website: ${TARGET}
-	echo "finished"
+${PRESENTATION}: ${PRESENTATION_SOURCE} ${PRESENTATION_DIR}
+	elm make --output $@ $<
 
-${TARGET}: ${SOURCE} ${TARGET_DIR}
-	elm make $<
-	mv ${TARGET_FILE} $@
-
-
-${TARGET_DIR}:
+${PRESENTATION_DIR}:
 	mkdir -p $@
 
 clean:
-	rm -rf ${TARGET_DIR}
+	rm -rf ${PRESENTATION}
