@@ -117,29 +117,15 @@ next model =
 
 
 updateInPlace : (StreamModel a -> StreamModel a) -> Model a -> Int -> Model a
-updateInPlace f model index =
-    if 0 <= index && index < List.length model then
-        let
-            prefix =
-                List.take index model
-
-            maybeStreamModel =
-                List.drop index model
-                    |> List.head
-
-            suffix =
-                List.drop (index + 1) model
-
-            updated =
-                maybeStreamModel
-                    |> Maybe.map (\streamModel -> [ f streamModel ])
-                    |> Maybe.withDefault []
-        in
-        prefix ++ updated ++ suffix
-
-    else
-        model
-
+updateInPlace f model target =
+    let
+        map index item =
+            if index == target then
+                f item
+            else
+                item
+    in
+    List.indexedMap map model
 
 
 -- View
