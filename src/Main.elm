@@ -116,7 +116,7 @@ next model =
             { model | stream = Empty }
 
 
-updateInPlace : (StreamModel a -> StreamModel a) -> Model a -> Int -> Model a
+updateInPlace : (a -> a) -> List a -> Int -> List a
 updateInPlace f model target =
     let
         map index item =
