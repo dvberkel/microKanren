@@ -5,6 +5,8 @@ import Html exposing (Html)
 import Html.Attributes as Attribute
 import Keyboard exposing (Key(..))
 import Markdown as TransformMarkdown
+import MicroKanren exposing (StreamModel, streamModelFromGoal)
+import MicroKanren.Kernel exposing (..)
 import Presentation.Debug exposing (viewKeys)
 import Task exposing (Task)
 
@@ -32,7 +34,7 @@ init =
 # Presentation
 ## with a sub-title
 """
-            , Blank
+            , Stream <| streamModelFromGoal "≡ t 5" <| callFresh (\term -> identical term (Value 5))
             ]
                 |> fromList
                 |> Maybe.withDefault emptyPresentation
@@ -57,6 +59,7 @@ type Presentation
 type Slide
     = Blank
     | Markdown String
+    | Stream (StreamModel Int)
 
 
 createModel : Presentation -> Model
@@ -188,6 +191,16 @@ viewSlide slide =
                 Markdown source ->
                     [ TransformMarkdown.toHtml [ Attribute.class "content" ] source
                     ]
+
+                Stream streamModel ->
+                    let
+                        streamModelView =
+                            streamModel
+                                |> MicroKanren.view String.fromInt
+                                |> Html.map (\_ -> TakeFromStream)
+                    in
+                    [ streamModelView
+                    ]
     in
     Html.div
         [ Attribute.classList
@@ -206,6 +219,9 @@ toClassName slide =
 
         Markdown _ ->
             "markdown"
+
+        Stream _ ->
+            "stream"
 
 
 viewInfo : Presentation -> Html Message
@@ -231,6 +247,7 @@ type Message
     = KeyMessage Keyboard.Msg
     | Advance
     | Backtrack
+    | TakeFromStream
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -268,6 +285,13 @@ update message model =
             in
             ( nextModel, Cmd.none )
 
+        TakeFromStream ->
+            let
+                nextModel =
+                    { model | presentation = takeFromStream model.presentation }
+            in
+            ( nextModel, Cmd.none )
+
 
 toCommand : List Key -> Maybe (Task Never Message)
 toCommand keys =
@@ -283,6 +307,23 @@ toCommand keys =
 
         _ :: tail ->
             toCommand tail
+
+
+takeFromStream : Presentation -> Presentation
+takeFromStream ((Presentation data) as original) =
+    case data.current of
+        Stream streamModel ->
+            let
+                nextStreamModel =
+                    MicroKanren.update MicroKanren.TakeFromStream streamModel
+
+                current =
+                    Stream nextStreamModel
+            in
+            Presentation { data | current = current }
+
+        _ ->
+            original
 
 
 
