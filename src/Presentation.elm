@@ -4,8 +4,9 @@ import Browser
 import Html exposing (Html)
 import Html.Attributes as Attribute
 import Keyboard exposing (Key(..))
-import Task exposing (Task)
 import Presentation.Debug exposing (viewKeys)
+import Task exposing (Task)
+
 
 main : Program () Model Message
 main =
@@ -158,9 +159,32 @@ slideCount (Presentation { preceding, current, following }) =
 view : Model -> Html Message
 view model =
     Html.div [ Attribute.class "presentation" ]
-        [ viewInfo model.presentation
-        , viewKeys model.pressedKeys
+        [ viewSlides model.presentation
+        , viewInfo model.presentation
         ]
+
+
+viewSlides : Presentation -> Html Message
+viewSlides (Presentation data) =
+    viewSlide data.current
+
+
+viewSlide : Slide -> Html Message
+viewSlide slide =
+    Html.div
+        [ Attribute.classList
+            [ ( "slide", True )
+            , ( toClassName slide, True )
+            ]
+        ]
+        []
+
+
+toClassName : Slide -> String
+toClassName slide =
+    case slide of
+        Blank ->
+            "blank"
 
 
 viewInfo : Presentation -> Html Message
@@ -207,7 +231,7 @@ update message model =
                         |> Maybe.map (Task.perform identity)
                         |> Maybe.withDefault Cmd.none
             in
-            ( nextModel, nextCommand)
+            ( nextModel, nextCommand )
 
         Advance ->
             let
