@@ -5,9 +5,9 @@ import Dict
 import Html
 import Html.Attributes as Attribute
 import Html.Events as Event
-import MicroKanren exposing (nat)
 import MicroKanren.Kernel exposing (..)
 import MicroKanren.UserLevel exposing (..)
+import MicroKanren.Util exposing (nat)
 
 
 main =
@@ -16,27 +16,27 @@ main =
             [ modelFromGoal "≡ t 5" <| callFresh (\term -> identical term (Value 5))
             , modelFromGoal "a and b" <|
                 conjoin
-                (callFresh (\a -> identical a (Value 7)))
-                (callFresh
-                    (\b ->
-                        disjoin
-                            (identical b (Value 5))
-                            (identical b (Value 6))
+                    (callFresh (\a -> identical a (Value 7)))
+                    (callFresh
+                        (\b ->
+                            disjoin
+                                (identical b (Value 5))
+                                (identical b (Value 6))
+                        )
                     )
-                )
             , modelFromGoal "nat" <| callFresh nat
             , modelFromGoal "conj (nat x) (nat y) (identical x y)" <|
                 callFresh
-                (\x ->
-                    callFresh
-                        (\y ->
-                            conj
-                                [ \_ -> nat x
-                                , \_ -> nat y
-                                , \_ -> identical x y
-                                ]
-                        )
-                )
+                    (\x ->
+                        callFresh
+                            (\y ->
+                                conj
+                                    [ \_ -> nat x
+                                    , \_ -> nat y
+                                    , \_ -> identical x y
+                                    ]
+                            )
+                    )
             ]
     in
     Browser.sandbox
