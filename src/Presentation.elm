@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Html)
 import Html.Attributes as Attribute
 import Keyboard exposing (Key(..))
+import Markdown as TransformMarkdown
 import Presentation.Debug exposing (viewKeys)
 import Task exposing (Task)
 
@@ -26,7 +27,13 @@ init : ( Model, Cmd Message )
 init =
     let
         presentation =
-            [ Blank, Blank, Blank ]
+            [ Blank
+            , Markdown """
+# Presentation
+## with a sub-title
+"""
+            , Blank
+            ]
                 |> fromList
                 |> Maybe.withDefault emptyPresentation
     in
@@ -49,6 +56,7 @@ type Presentation
 
 type Slide
     = Blank
+    | Markdown String
 
 
 createModel : Presentation -> Model
@@ -171,13 +179,23 @@ viewSlides (Presentation data) =
 
 viewSlide : Slide -> Html Message
 viewSlide slide =
+    let
+        content =
+            case slide of
+                Blank ->
+                    []
+
+                Markdown source ->
+                    [ TransformMarkdown.toHtml [ Attribute.class "content" ] source
+                    ]
+    in
     Html.div
         [ Attribute.classList
             [ ( "slide", True )
             , ( toClassName slide, True )
             ]
         ]
-        []
+        content
 
 
 toClassName : Slide -> String
@@ -185,6 +203,9 @@ toClassName slide =
     case slide of
         Blank ->
             "blank"
+
+        Markdown _ ->
+            "markdown"
 
 
 viewInfo : Presentation -> Html Message
