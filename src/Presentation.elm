@@ -5,7 +5,7 @@ import Html exposing (Html)
 import Html.Attributes as Attribute
 import Keyboard exposing (Key(..))
 import Task exposing (Task)
-
+import Presentation.Debug exposing (viewKeys)
 
 main : Program () Model Message
 main =
@@ -176,24 +176,6 @@ viewCount presentation =
         [ Html.span [ Attribute.class "index" ] [ Html.text <| String.fromInt <| currentIndex presentation ]
         , Html.span [ Attribute.class "total" ] [ Html.text <| String.fromInt <| slideCount presentation ]
         ]
-
-
-viewKeys : List Key -> Html Message
-viewKeys keys =
-    let
-        content =
-            List.map viewKey keys
-    in
-    Html.div [ Attribute.class "keys" ] content
-
-
-viewKey : Key -> Html Message
-viewKey key =
-    let
-        text =
-            Debug.toString key
-    in
-    Html.span [ Attribute.class "key" ] [ Html.text text ]
 
 
 
