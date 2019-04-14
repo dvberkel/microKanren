@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Html)
 import Html.Attributes as Attribute
 import Keyboard exposing (Key(..))
+import Task exposing (Task)
 
 
 main : Program () Model Message
@@ -158,6 +159,7 @@ view : Model -> Html Message
 view model =
     Html.div [ Attribute.class "presentation" ]
         [ viewInfo model.presentation
+        , viewKeys model.pressedKeys
         ]
 
 
@@ -176,12 +178,32 @@ viewCount presentation =
         ]
 
 
+viewKeys : List Key -> Html Message
+viewKeys keys =
+    let
+        content =
+            List.map viewKey keys
+    in
+    Html.div [ Attribute.class "keys" ] content
+
+
+viewKey : Key -> Html Message
+viewKey key =
+    let
+        text =
+            Debug.toString key
+    in
+    Html.span [ Attribute.class "key" ] [ Html.text text ]
+
+
 
 {- UPDATE -}
 
 
 type Message
     = KeyMessage Keyboard.Msg
+    | Advance
+    | Backtrack
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -189,12 +211,51 @@ update message model =
     case message of
         KeyMessage keyMessage ->
             let
+                pressedKeys =
+                    Keyboard.update keyMessage model.pressedKeys
+
                 nextModel =
                     { model
-                        | pressedKeys = Keyboard.update keyMessage model.pressedKeys
+                        | pressedKeys = pressedKeys
                     }
+
+                nextCommand =
+                    pressedKeys
+                        |> toCommand
+                        |> Maybe.map (Task.perform identity)
+                        |> Maybe.withDefault Cmd.none
+            in
+            ( nextModel, nextCommand)
+
+        Advance ->
+            let
+                nextModel =
+                    { model | presentation = advance model.presentation }
             in
             ( nextModel, Cmd.none )
+
+        Backtrack ->
+            let
+                nextModel =
+                    { model | presentation = backtrack model.presentation }
+            in
+            ( nextModel, Cmd.none )
+
+
+toCommand : List Key -> Maybe (Task Never Message)
+toCommand keys =
+    case keys of
+        [] ->
+            Nothing
+
+        ArrowRight :: _ ->
+            Just <| Task.succeed Advance
+
+        ArrowLeft :: _ ->
+            Just <| Task.succeed Backtrack
+
+        _ :: tail ->
+            toCommand tail
 
 
 
