@@ -97,7 +97,7 @@ next model =
     case stream of
         Mature state followingStream ->
             { model
-                | seenStates = List.append model.seenStates [ state ]
+                | seenStates = model.seenStates ++ [ state ]
                 , stream = followingStream
             }
 
