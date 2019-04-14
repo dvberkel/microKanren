@@ -3,9 +3,10 @@ module Presentation exposing (Presentation, Slide(..))
 import Browser
 import Html exposing (Html)
 import Html.Attributes as Attribute
+import Keyboard exposing (Key(..))
 
 
-main : Program () Model msg
+main : Program () Model Message
 main =
     Browser.element
         { init = \_ -> init
@@ -19,7 +20,7 @@ main =
 {- MODEL -}
 
 
-init : ( Model, Cmd msg )
+init : ( Model, Cmd Message )
 init =
     let
         presentation =
@@ -27,11 +28,13 @@ init =
                 |> fromList
                 |> Maybe.withDefault emptyPresentation
     in
-    ( presentation, Cmd.none )
+    ( createModel presentation, Cmd.none )
 
 
 type alias Model =
-    Presentation
+    { pressedKeys : List Key
+    , presentation : Presentation
+    }
 
 
 type Presentation
@@ -44,6 +47,11 @@ type Presentation
 
 type Slide
     = Blank
+
+
+createModel : Presentation -> Model
+createModel presentation =
+    { pressedKeys = [], presentation = presentation }
 
 
 emptyPresentation : Presentation
@@ -146,25 +154,25 @@ slideCount (Presentation { preceding, current, following }) =
 {- VIEW -}
 
 
-view : Model -> Html msg
+view : Model -> Html Message
 view model =
     Html.div [ Attribute.class "presentation" ]
-        [ viewInfo model
+        [ viewInfo model.presentation
         ]
 
 
-viewInfo : Model -> Html msg
-viewInfo model =
+viewInfo : Presentation -> Html Message
+viewInfo presentation =
     Html.div [ Attribute.class "info" ]
-        [ viewCount model
+        [ viewCount presentation
         ]
 
 
-viewCount : Model -> Html msg
-viewCount model =
+viewCount : Presentation -> Html Message
+viewCount presentation =
     Html.div [ Attribute.class "count" ]
-        [ Html.span [ Attribute.class "index" ] [ Html.text <| String.fromInt <| currentIndex model ]
-        , Html.span [ Attribute.class "total" ] [ Html.text <| String.fromInt <| slideCount model ]
+        [ Html.span [ Attribute.class "index" ] [ Html.text <| String.fromInt <| currentIndex presentation ]
+        , Html.span [ Attribute.class "total" ] [ Html.text <| String.fromInt <| slideCount presentation ]
         ]
 
 
@@ -172,15 +180,29 @@ viewCount model =
 {- UPDATE -}
 
 
-update : msg -> Model -> ( Model, Cmd msg )
-update _ model =
-    ( model, Cmd.none )
+type Message
+    = KeyMessage Keyboard.Msg
+
+
+update : Message -> Model -> ( Model, Cmd Message )
+update message model =
+    case message of
+        KeyMessage keyMessage ->
+            let
+                nextModel =
+                    { model
+                        | pressedKeys = Keyboard.update keyMessage model.pressedKeys
+                    }
+            in
+            ( nextModel, Cmd.none )
 
 
 
 {- SUBSCRIPTIONS -}
 
 
-subscriptions : Model -> Sub msg
+subscriptions : Model -> Sub Message
 subscriptions model =
-    Sub.none
+    Sub.batch
+        [ Sub.map KeyMessage Keyboard.subscriptions
+        ]
