@@ -1,30 +1,15 @@
 .PHONY: all clean
 
 DOCS = ../docs
-PRESENTATION_DIR = ${DOCS}/presentation/js
-PRESENTATION = ${PRESENTATION_DIR}/presentation.js
-DEMO_DIR = ${DOCS}/demo/js
-DEMO = ${DEMO_DIR}/demo.js
 SOURCE_DIR = src
-PRESENTATION_SOURCE = ${SOURCE_DIR}/Presentation.elm
-DEMO_SOURCE = ${SOURCE_DIR}/Demo.elm
+JAVASCRIPT_DIR = ${DOCS}/js
+TARGETS = ${JAVASCRIPT_DIR}/Presentation.js ${JAVASCRIPT_DIR}/Demo.js
 
-
-all: ${PRESENTATION} ${DEMO}
+all: ${TARGETS}
 	@echo "finished"
 
-${PRESENTATION}: ${PRESENTATION_SOURCE} ${PRESENTATION_DIR}
-	elm make --output $@ $<
+${JAVASCRIPT_DIR}/%.js: ${SOURCE_DIR}/%.elm ${JAVASCRIPT_DIR} 
+	elm make --output=$@ $<
 
-${DEMO}: ${DEMO_SOURCE} ${DEMO_DIR}
-	elm make --output $@ $<
-
-${PRESENTATION_DIR}:
+${JAVASCRIPT_DIR}:
 	mkdir -p $@
-
-${DEMO_DIR}:
-	mkdir -p $@
-
-clean:
-	rm -rf ${PRESENTATION}
-	rm -rf ${DEMO}
