@@ -4,19 +4,19 @@ import Html exposing (Html)
 import Html.Attributes as Attribute
 import Keyboard exposing (Key)
 
-viewKeys : List Key -> Html msg
-viewKeys keys =
+viewKeys : (Key -> String) -> List Key -> Html msg
+viewKeys nameFor keys =
     let
         content =
-            List.map viewKey keys
+            List.map (viewKey nameFor) keys
     in
     Html.div [ Attribute.class "keys" ] content
 
 
-viewKey : Key -> Html msg
-viewKey key =
+viewKey : (Key -> String) -> Key -> Html msg
+viewKey nameFor key =
     let
         text =
-            Debug.toString key
+            nameFor key
     in
     Html.span [ Attribute.class "key" ] [ Html.text text ]

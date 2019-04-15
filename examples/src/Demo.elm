@@ -61,7 +61,7 @@ main =
     Browser.sandbox
         { init = goals
         , update = update
-        , view = view
+        , view = view String.fromInt
         }
 
 
@@ -77,15 +77,15 @@ type alias Model a =
 -- View
 
 
-view : List (StreamModel a) -> Html.Html Message
-view model =
+view : (a -> String) -> List (StreamModel a) -> Html.Html Message
+view representationOf model =
     let
         map index streamView =
             Html.map (\_ -> TakeFromStream index) streamView
 
         streamModels =
             model
-                |> List.map (MicroKanren.view Debug.toString)
+                |> List.map (MicroKanren.view representationOf)
                 |> List.indexedMap map
     in
     Html.div [ Attribute.class "microKanren" ] streamModels
