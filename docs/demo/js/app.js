@@ -1,4 +1,4 @@
 (function () {
-    var node = document.getElementsByTagName("body")[0];
+    var node = document.getElementById("container");
     var app = Elm.Demo.init({ node: node });
 })();
