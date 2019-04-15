@@ -8,7 +8,25 @@ import Html.Events as Event
 import MicroKanren exposing (..)
 import MicroKanren.Kernel exposing (..)
 import MicroKanren.UserLevel exposing (..)
-import MicroKanren.Util exposing (..)
+
+
+
+-- Goal Constructors
+
+
+{-| A goal that binds a variable to the natural numbers.
+-}
+nat : Term Int -> Goal Int
+nat =
+    natFrom 0
+
+
+natFrom : Int -> Term Int -> Goal Int
+natFrom start =
+    \term ->
+        disjoin
+            (identical term (Value start))
+            (zzz (\_ -> natFrom (start + 1) term))
 
 
 main =
@@ -59,7 +77,7 @@ type alias Model a =
 -- View
 
 
-view : List  (StreamModel a) -> Html.Html Message
+view : List (StreamModel a) -> Html.Html Message
 view model =
     let
         map index streamView =
