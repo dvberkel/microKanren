@@ -1,22 +1,28 @@
 module MicroKanren.Kernel exposing
-    ( Goal
-    , State
-    , Stream(..)
-    , Substitution
-    , Term(..)
-    , Var
-    , callFresh
-    , conjoin
-    , disjoin
-    , emptyState
-    , identical
-    , unit
+    ( Goal, State, Stream(..), Term(..), Var, Substitution
+    , callFresh, conjoin, disjoin, identical
+    , emptyState, unit
     )
 
 {-| μKanren provides an implementation of the
 
 > minimalist language in the [miniKanren](http://minikanren.org/) family of
 > relational (logic) programming languages.
+
+
+## Types
+
+@docs Goal, State, Stream, Term, Var, Substitution
+
+
+## Goal Constuctors
+
+@docs callFresh, conjoin, disjoin, identical
+
+
+## Constructors
+
+@docs emptyState, unit
 
 -}
 

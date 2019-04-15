@@ -1,4 +1,27 @@
-module MicroKanren exposing (Message(..), StreamModel, streamModelFromGoal, update, view)
+module MicroKanren exposing
+    ( Message(..), StreamModel
+    , streamModelFromGoal
+    , update, view
+    )
+
+{-| Visualization of μKanren goals
+
+
+## Types
+
+@docs Message, StreamModel
+
+
+## Constructor
+
+@docs streamModelFromGoal
+
+
+## Elm Architecture
+
+@docs update, view
+
+-}
 
 import Dict
 import Html exposing (Html)
@@ -12,6 +35,8 @@ import MicroKanren.UserLevel exposing (pull)
 -- MODEL
 
 
+{-| Keep track of a Stream.
+-}
 type alias StreamModel a =
     { name : String
     , seenStates : List (State a)
@@ -19,6 +44,8 @@ type alias StreamModel a =
     }
 
 
+{-| Create a StreamModel from a Goal.
+-}
 streamModelFromGoal : String -> Goal a -> StreamModel a
 streamModelFromGoal name goal =
     { name = name
@@ -30,7 +57,9 @@ streamModelFromGoal name goal =
 
 -- VIEW
 
+{-| Represent a StreamModel.
 
+This needs a way to visualize the generic parameter. It is provided as funtion with signature (a -> String). -}
 view : (a -> String) -> StreamModel a -> Html.Html Message
 view stringify model =
     Html.div [ Attribute.class "stream" ]
@@ -121,11 +150,11 @@ viewStream stream =
 
 -- UPDATE
 
-
+{-| Message a StreamModel can react to -}
 type Message
     = TakeFromStream
 
-
+{-| Update the StreamModel according to the received Message -}
 update : Message -> StreamModel a -> StreamModel a
 update _ model =
     let

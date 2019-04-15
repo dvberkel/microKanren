@@ -4,6 +4,12 @@ module MicroKanren.UserLevel exposing (conj, disj, pull, take, zzz)
 language, a user may rightly desire a more sophisticated set of tools with which
 to program and through which to view the results. A sample set of such tools is
 provided.
+
+
+## Helpers
+
+@docs conj, disj, pull, take, zzz
+
 -}
 
 import MicroKanren.Kernel as Kernel
