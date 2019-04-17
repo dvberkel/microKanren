@@ -50,8 +50,8 @@ type alias Model =
 type FetchStatus
     = Idle
     | Loading
-    | Success
-    | Failure
+    | Success String
+    | Failure Http.Error
 
 
 createModel : Presentation -> Model
@@ -92,7 +92,22 @@ update : Message -> Model -> ( Model, Cmd Message )
 update message model =
     case message of
         Got result ->
-            ( model, Cmd.none )
+            case result of
+                Ok source ->
+                    let
+                        nextModel =
+                            model
+                                |> updateFetchStatus (Success source)
+                    in
+                    ( nextModel, Cmd.none )
+
+                Err error ->
+                    let
+                        nextModel =
+                            model
+                                |> updateFetchStatus (Failure error)
+                    in
+                    ( nextModel, Cmd.none )
 
         KeyMessage keyMessage ->
             let
