@@ -3,6 +3,7 @@ module Presentation exposing (main)
 import Browser
 import Html exposing (Html)
 import Html.Attributes as Attribute
+import Http
 import Keyboard exposing (Key(..))
 import MicroKanren exposing (StreamModel, streamModelFromGoal)
 import MicroKanren.Kernel exposing (..)
@@ -30,10 +31,13 @@ init =
     let
         model =
             emptyPresentation
-            |> createModel
-            |> updateFetchStatus Loading
+                |> createModel
+                |> updateFetchStatus Loading
+
+        command =
+            Http.get { url = "presentation.md", expect = Http.expectString Got }
     in
-    ( model, Cmd.none )
+    ( model, command )
 
 
 type alias Model =
@@ -81,11 +85,15 @@ type Message
     | Advance
     | Backtrack
     | TakeFromStream
+    | Got (Result Http.Error String)
 
 
 update : Message -> Model -> ( Model, Cmd Message )
 update message model =
     case message of
+        Got result ->
+            ( model, Cmd.none )
+
         KeyMessage keyMessage ->
             let
                 pressedKeys =
