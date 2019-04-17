@@ -13,22 +13,27 @@ import Presentation.Parser as Parser
 import Task exposing (Task)
 
 
-main : Program () Model Message
+main : Program Flags Model Message
 main =
     Browser.element
-        { init = \_ -> init
+        { init = init
         , update = update
         , view = view
         , subscriptions = subscriptions
         }
 
 
+type alias Flags =
+    { url : String
+    }
+
+
 
 {- MODEL -}
 
 
-init : ( Model, Cmd Message )
-init =
+init : Flags -> ( Model, Cmd Message )
+init flags =
     let
         model =
             emptyPresentation
@@ -36,7 +41,15 @@ init =
                 |> updateStatus Loading
 
         command =
-            Http.get { url = "presentation.md", expect = Http.expectString Got }
+            Http.request
+                { method = "GET"
+                , headers = [ Http.header "Accept" "text/plain" ]
+                , url = flags.url
+                , body = Http.emptyBody
+                , expect = Http.expectString Got
+                , timeout = Nothing
+                , tracker = Nothing
+                }
     in
     ( model, command )
 
