@@ -1,13 +1,13 @@
-module Presentation.Parser exposing (parse)
+module Presentation.Parser exposing (parse, Error(..))
 
 import Presentation.Kernel as Presentation exposing (Presentation, Slide(..))
 
 
-type ParseError
+type Error
     = NoSlides
 
 
-parse : String -> Result ParseError Presentation
+parse : String -> Result Error Presentation
 parse input =
     let
         toPresentation =
@@ -19,21 +19,21 @@ parse input =
         |> Result.andThen toPresentation
 
 
-parseSlides : String -> Result ParseError (List Slide)
+parseSlides : String -> Result Error (List Slide)
 parseSlides input =
     input
         |> String.split "---\n"
         |> parseMultipleSlides
 
 
-parseMultipleSlides : List String -> Result ParseError (List Slide)
+parseMultipleSlides : List String -> Result Error (List Slide)
 parseMultipleSlides inputs =
     inputs
         |> List.map parseSlide
         |> gather
 
 
-parseSlide : String -> Result ParseError Slide
+parseSlide : String -> Result Error Slide
 parseSlide input =
     Ok <| Markdown input
 

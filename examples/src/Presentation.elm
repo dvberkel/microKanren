@@ -9,6 +9,7 @@ import MicroKanren exposing (StreamModel, streamModelFromGoal)
 import MicroKanren.Kernel exposing (..)
 import Presentation.Debug exposing (viewKeys)
 import Presentation.Kernel exposing (..)
+import Presentation.Parser as Parser
 import Task exposing (Task)
 
 
@@ -32,7 +33,7 @@ init =
         model =
             emptyPresentation
                 |> createModel
-                |> updateFetchStatus Loading
+                |> updateStatus Loading
 
         command =
             Http.get { url = "presentation.md", expect = Http.expectString Got }
@@ -41,27 +42,28 @@ init =
 
 
 type alias Model =
-    { fetchStatus : FetchStatus
+    { status : Status
     , pressedKeys : List Key
     , presentation : Presentation
     }
 
 
-type FetchStatus
+type Status
     = Idle
     | Loading
-    | Success String
-    | Failure Http.Error
+    | RequestSuccess
+    | RequestFailure Http.Error
+    | ParseFailure Parser.Error
 
 
 createModel : Presentation -> Model
 createModel presentation =
-    { fetchStatus = Idle, pressedKeys = [], presentation = presentation }
+    { status = Idle, pressedKeys = [], presentation = presentation }
 
 
-updateFetchStatus : FetchStatus -> Model -> Model
-updateFetchStatus fetchStatus model =
-    { model | fetchStatus = Idle }
+updateStatus : Status -> Model -> Model
+updateStatus status model =
+    { model | status = status }
 
 
 
@@ -86,6 +88,7 @@ type Message
     | Backtrack
     | TakeFromStream
     | Got (Result Http.Error String)
+    | Parse String
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -97,7 +100,28 @@ update message model =
                     let
                         nextModel =
                             model
-                                |> updateFetchStatus (Success source)
+                                |> updateStatus RequestSuccess
+
+                        task =
+                            Task.succeed source
+                    in
+                    ( nextModel, Task.perform Parse task )
+
+                Err error ->
+                    let
+                        nextModel =
+                            model
+                                |> updateStatus (RequestFailure error)
+                    in
+                    ( nextModel, Cmd.none )
+
+        Parse source ->
+            case Parser.parse source of
+                Ok presentation ->
+                    let
+                        nextModel =
+                            createModel presentation
+                                |> updateStatus Idle
                     in
                     ( nextModel, Cmd.none )
 
@@ -105,7 +129,7 @@ update message model =
                     let
                         nextModel =
                             model
-                                |> updateFetchStatus (Failure error)
+                                |> updateStatus (ParseFailure error)
                     in
                     ( nextModel, Cmd.none )
 
