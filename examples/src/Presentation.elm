@@ -28,10 +28,12 @@ main =
 init : ( Model, Cmd Message )
 init =
     let
-        presentation =
+        model =
             emptyPresentation
+            |> createModel
+            |> updateFetchStatus Loading
     in
-    ( createModel presentation, Cmd.none )
+    ( model, Cmd.none )
 
 
 type alias Model =
@@ -51,6 +53,11 @@ type FetchStatus
 createModel : Presentation -> Model
 createModel presentation =
     { fetchStatus = Idle, pressedKeys = [], presentation = presentation }
+
+
+updateFetchStatus : FetchStatus -> Model -> Model
+updateFetchStatus fetchStatus model =
+    { model | fetchStatus = Idle }
 
 
 
