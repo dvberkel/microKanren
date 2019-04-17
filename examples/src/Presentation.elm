@@ -29,28 +29,28 @@ init : ( Model, Cmd Message )
 init =
     let
         presentation =
-            [ Blank
-            , Markdown """
-# Presentation
-## with a sub-title
-"""
-            , Stream <| streamModelFromGoal "≡ t 5" <| callFresh (\term -> identical term (Value 5))
-            ]
-                |> fromList
-                |> Maybe.withDefault emptyPresentation
+            emptyPresentation
     in
     ( createModel presentation, Cmd.none )
 
 
 type alias Model =
-    { pressedKeys : List Key
+    { fetchStatus : FetchStatus
+    , pressedKeys : List Key
     , presentation : Presentation
     }
 
 
+type FetchStatus
+    = Idle
+    | Loading
+    | Success
+    | Failure
+
+
 createModel : Presentation -> Model
 createModel presentation =
-    { pressedKeys = [], presentation = presentation }
+    { fetchStatus = Idle, pressedKeys = [], presentation = presentation }
 
 
 
