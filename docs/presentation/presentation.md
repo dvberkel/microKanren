@@ -8,3 +8,9 @@
 > a minimalist language in the [miniKanren](http://minikanren.org/) family 
 > of relational (logic) programming languages. 
 
+---
+
+## miniKanren
+
+> miniKanren is an embedded Domain Specific Language for logic programming.
+ 
