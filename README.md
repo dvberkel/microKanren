@@ -11,7 +11,7 @@ It is described in Jason Hemann and Daniel P.Friedman's paper:
 [μKanren: A Minimal Functional Core for Relational Programming][paper].
 
 ## Learn more
-If you want to learn more about micoKanren our this Elm implementation go to our
+If you want to learn more about microKanren our this Elm implementation go to our
 [interactive page][page].
 
 [elm]: http://elm-lang.org/
