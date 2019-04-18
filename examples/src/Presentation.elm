@@ -43,7 +43,7 @@ init flags =
         command =
             Http.request
                 { method = "GET"
-                , headers = [ Http.header "Accept" "text/plain" ]
+                , headers = [ Http.header "Accept" "text/markdown, text/plain" ]
                 , url = flags.url
                 , body = Http.emptyBody
                 , expect = Http.expectString Got
