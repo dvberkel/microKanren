@@ -1,5 +1,7 @@
-module Presentation.Parser exposing (parse, Error(..))
+module Presentation.Parser exposing (Error(..), parse)
 
+import MicroKanren exposing (streamModelFromGoal)
+import MicroKanren.Kernel exposing (..)
 import Presentation.Kernel as Presentation exposing (Presentation, Slide(..))
 
 
@@ -35,7 +37,20 @@ parseMultipleSlides inputs =
 
 parseSlide : String -> Result Error Slide
 parseSlide input =
-    Ok <| Markdown input
+    if String.startsWith "goal: " input then
+        parseGoal <| String.dropLeft 6 input
+
+    else
+        Ok <| Markdown input
+
+
+parseGoal : String -> Result Error Slide
+parseGoal input =
+    let
+        streamModel =
+            streamModelFromGoal input (callFresh (\term -> identical term (Value 5)))
+    in
+    Ok <| Stream streamModel
 
 
 gather : List (Result e a) -> Result e (List a)

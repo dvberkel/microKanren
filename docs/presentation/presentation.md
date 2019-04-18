@@ -29,3 +29,6 @@ move(N, X, Y, Z, P) :-
     append(P1, P2, Q),
     append(Q, P3, P).
 ```
+
+---
+goal: callFresh (\term -> identical term (Value 5))

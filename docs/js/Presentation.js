@@ -5961,7 +5961,7 @@ var author$project$Presentation$init = function (flags) {
 			ba: elm$http$Http$expectString(author$project$Presentation$Got),
 			bh: _List_fromArray(
 				[
-					A2(elm$http$Http$header, 'Accept', 'text/plain')
+					A2(elm$http$Http$header, 'Accept', 'text/markdown, text/plain')
 				]),
 			bl: 'GET',
 			bI: elm$core$Maybe$Nothing,
@@ -6702,8 +6702,166 @@ var author$project$Presentation$Parser$gather = author$project$Presentation$Pars
 var author$project$Presentation$Kernel$Markdown = function (a) {
 	return {$: 1, a: a};
 };
-var author$project$Presentation$Parser$parseSlide = function (input) {
+var dvberkel$microkanren$MicroKanren$Kernel$emptyState = {bg: 0, bF: elm$core$Dict$empty};
+var dvberkel$microkanren$MicroKanren$streamModelFromGoal = F2(
+	function (name, goal) {
+		return {
+			af: name,
+			P: _List_Nil,
+			I: goal(dvberkel$microkanren$MicroKanren$Kernel$emptyState)
+		};
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$Value = function (a) {
+	return {$: 1, a: a};
+};
+var dvberkel$microkanren$MicroKanren$Kernel$Variable = function (a) {
+	return {$: 0, a: a};
+};
+var dvberkel$microkanren$MicroKanren$Kernel$callFresh = function (f) {
+	return function (state) {
+		return A2(
+			f,
+			dvberkel$microkanren$MicroKanren$Kernel$Variable(state.bg),
+			_Utils_update(
+				state,
+				{bg: state.bg + 1}));
+	};
+};
+var dvberkel$microkanren$MicroKanren$Kernel$mzero = dvberkel$microkanren$MicroKanren$Kernel$Empty;
+var dvberkel$microkanren$MicroKanren$Kernel$extend = F3(
+	function (variable, term, substitution) {
+		return A3(elm$core$Dict$insert, variable, term, substitution);
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$walk = F2(
+	function (term, substitution) {
+		walk:
+		while (true) {
+			if (!term.$) {
+				var variable = term.a;
+				var _n1 = A2(elm$core$Dict$get, variable, substitution);
+				if (!_n1.$) {
+					var value = _n1.a;
+					var $temp$term = value,
+						$temp$substitution = substitution;
+					term = $temp$term;
+					substitution = $temp$substitution;
+					continue walk;
+				} else {
+					return term;
+				}
+			} else {
+				return term;
+			}
+		}
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$unify = F3(
+	function (left, right, substitution) {
+		unify:
+		while (true) {
+			var rightWalk = A2(dvberkel$microkanren$MicroKanren$Kernel$walk, right, substitution);
+			var leftWalk = A2(dvberkel$microkanren$MicroKanren$Kernel$walk, left, substitution);
+			var _n0 = _Utils_Tuple2(leftWalk, rightWalk);
+			_n0$3:
+			while (true) {
+				_n0$5:
+				while (true) {
+					switch (_n0.a.$) {
+						case 1:
+							switch (_n0.b.$) {
+								case 1:
+									var leftValue = _n0.a.a;
+									var rightValue = _n0.b.a;
+									return _Utils_eq(leftValue, rightValue) ? elm$core$Maybe$Just(substitution) : elm$core$Maybe$Nothing;
+								case 0:
+									break _n0$3;
+								default:
+									break _n0$5;
+							}
+						case 0:
+							if (!_n0.b.$) {
+								var leftVariable = _n0.a.a;
+								var rightVariable = _n0.b.a;
+								return _Utils_eq(leftVariable, rightVariable) ? elm$core$Maybe$Just(substitution) : elm$core$Maybe$Nothing;
+							} else {
+								var leftVariable = _n0.a.a;
+								return elm$core$Maybe$Just(
+									A3(dvberkel$microkanren$MicroKanren$Kernel$extend, leftVariable, rightWalk, substitution));
+							}
+						default:
+							switch (_n0.b.$) {
+								case 0:
+									break _n0$3;
+								case 2:
+									var _n1 = _n0.a.a;
+									var leftFirst = _n1.a;
+									var leftSecond = _n1.b;
+									var _n2 = _n0.b.a;
+									var rightFirst = _n2.a;
+									var rightSecond = _n2.b;
+									var _n3 = A3(dvberkel$microkanren$MicroKanren$Kernel$unify, leftFirst, rightFirst, substitution);
+									if (!_n3.$) {
+										var nextSubstitution = _n3.a;
+										var $temp$left = leftSecond,
+											$temp$right = rightSecond,
+											$temp$substitution = nextSubstitution;
+										left = $temp$left;
+										right = $temp$right;
+										substitution = $temp$substitution;
+										continue unify;
+									} else {
+										return elm$core$Maybe$Nothing;
+									}
+								default:
+									break _n0$5;
+							}
+					}
+				}
+				return elm$core$Maybe$Nothing;
+			}
+			var rightVariable = _n0.b.a;
+			return elm$core$Maybe$Just(
+				A3(dvberkel$microkanren$MicroKanren$Kernel$extend, rightVariable, leftWalk, substitution));
+		}
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$Mature = F2(
+	function (a, b) {
+		return {$: 2, a: a, b: b};
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$unit = function (state) {
+	return A2(dvberkel$microkanren$MicroKanren$Kernel$Mature, state, dvberkel$microkanren$MicroKanren$Kernel$Empty);
+};
+var dvberkel$microkanren$MicroKanren$Kernel$identical = F2(
+	function (left, right) {
+		return function (state) {
+			var _n0 = A3(dvberkel$microkanren$MicroKanren$Kernel$unify, left, right, state.bF);
+			if (!_n0.$) {
+				var substitution = _n0.a;
+				return dvberkel$microkanren$MicroKanren$Kernel$unit(
+					_Utils_update(
+						state,
+						{bF: substitution}));
+			} else {
+				return dvberkel$microkanren$MicroKanren$Kernel$mzero;
+			}
+		};
+	});
+var author$project$Presentation$Parser$parseGoal = function (input) {
+	var streamModel = A2(
+		dvberkel$microkanren$MicroKanren$streamModelFromGoal,
+		input,
+		dvberkel$microkanren$MicroKanren$Kernel$callFresh(
+			function (term) {
+				return A2(
+					dvberkel$microkanren$MicroKanren$Kernel$identical,
+					term,
+					dvberkel$microkanren$MicroKanren$Kernel$Value(5));
+			}));
 	return elm$core$Result$Ok(
+		author$project$Presentation$Kernel$Stream(streamModel));
+};
+var author$project$Presentation$Parser$parseSlide = function (input) {
+	return A2(elm$core$String$startsWith, 'goal: ', input) ? author$project$Presentation$Parser$parseGoal(
+		A2(elm$core$String$dropLeft, 6, input)) : elm$core$Result$Ok(
 		author$project$Presentation$Kernel$Markdown(input));
 };
 var author$project$Presentation$Parser$parseMultipleSlides = function (inputs) {
