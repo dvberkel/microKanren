@@ -31,4 +31,8 @@ move(N, X, Y, Z, P) :-
 ```
 
 ---
-goal: callFresh (\term -> identical term (Value 5))
+goal: identical_5
+
+---
+
+## That was Stream

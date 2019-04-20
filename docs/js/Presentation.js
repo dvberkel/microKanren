@@ -519,11 +519,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.ak.M === region.av.M)
+	if (region.al.M === region.av.M)
 	{
-		return 'on line ' + region.ak.M;
+		return 'on line ' + region.al.M;
 	}
-	return 'on lines ' + region.ak.M + ' through ' + region.av.M;
+	return 'on lines ' + region.al.M + ' through ' + region.av.M;
 }
 
 
@@ -2331,9 +2331,9 @@ var _Http_toTask = F3(function(router, toTask, request)
 		elm$core$Maybe$isJust(request.bK) && _Http_track(router, xhr, request.bK.a);
 
 		try {
-			xhr.open(request.bl, request._, true);
+			xhr.open(request.bl, request.aa, true);
 		} catch (e) {
-			return done(elm$http$Http$BadUrl_(request._));
+			return done(elm$http$Http$BadUrl_(request.aa));
 		}
 
 		_Http_configureRequest(xhr, request);
@@ -2377,7 +2377,7 @@ function _Http_toResponse(toBody, xhr)
 function _Http_toMetadata(xhr)
 {
 	return {
-		_: xhr.responseURL,
+		aa: xhr.responseURL,
 		aW: xhr.status,
 		bD: xhr.statusText,
 		bh: _Http_parseHeaders(xhr.getAllResponseHeaders())
@@ -2476,14 +2476,14 @@ function _Http_track(router, xhr, tracker)
 		if (xhr.c) { return; }
 		_Scheduler_rawSpawn(A2(elm$core$Platform$sendToSelf, router, _Utils_Tuple2(tracker, elm$http$Http$Sending({
 			bC: event.loaded,
-			aj: event.total
+			ak: event.total
 		}))));
 	});
 	xhr.addEventListener('progress', function(event) {
 		if (xhr.c) { return; }
 		_Scheduler_rawSpawn(A2(elm$core$Platform$sendToSelf, router, _Utils_Tuple2(tracker, elm$http$Http$Receiving({
 			bz: event.loaded,
-			aj: event.lengthComputable ? elm$core$Maybe$Just(event.total) : elm$core$Maybe$Nothing
+			ak: event.lengthComputable ? elm$core$Maybe$Just(event.total) : elm$core$Maybe$Nothing
 		}))));
 	});
 }
@@ -2836,7 +2836,7 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 	return {
 		v: func(record.v),
 		am: record.am,
-		ai: record.ai
+		aj: record.aj
 	}
 });
 
@@ -3108,7 +3108,7 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.am;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.ai) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.aj) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -4364,8 +4364,8 @@ function _Browser_getViewport()
 	return {
 		aU: _Browser_getScene(),
 		a$: {
-			aa: _Browser_window.pageXOffset,
-			ab: _Browser_window.pageYOffset,
+			ab: _Browser_window.pageXOffset,
+			ac: _Browser_window.pageYOffset,
 			K: _Browser_doc.documentElement.clientWidth,
 			E: _Browser_doc.documentElement.clientHeight
 		}
@@ -4406,8 +4406,8 @@ function _Browser_getViewportOf(id)
 				E: node.scrollHeight
 			},
 			a$: {
-				aa: node.scrollLeft,
-				ab: node.scrollTop,
+				ab: node.scrollLeft,
+				ac: node.scrollTop,
 				K: node.clientWidth,
 				E: node.clientHeight
 			}
@@ -4441,14 +4441,14 @@ function _Browser_getElement(id)
 		return {
 			aU: _Browser_getScene(),
 			a$: {
-				aa: x,
-				ab: y,
+				ab: x,
+				ac: y,
 				K: _Browser_doc.documentElement.clientWidth,
 				E: _Browser_doc.documentElement.clientHeight
 			},
 			a8: {
-				aa: x + rect.left,
-				ab: y + rect.top,
+				ab: x + rect.left,
+				ac: y + rect.top,
 				K: rect.width,
 				E: rect.height
 			}
@@ -4670,13 +4670,13 @@ var elm$core$Set$toList = function (_n0) {
 	return elm$core$Dict$keys(dict);
 };
 var author$project$Presentation$createModel = function (presentation) {
-	return {q: presentation, Y: _List_Nil, al: author$project$Presentation$Idle};
+	return {q: presentation, Y: _List_Nil, _: author$project$Presentation$Idle};
 };
 var author$project$Presentation$updateStatus = F2(
 	function (status, model) {
 		return _Utils_update(
 			model,
-			{al: status});
+			{_: status});
 	});
 var author$project$Presentation$Kernel$Blank = {$: 0};
 var author$project$Presentation$Kernel$Presentation = elm$core$Basics$identity;
@@ -5925,7 +5925,7 @@ var elm$http$Http$cmdMap = F2(
 					bl: r.bl,
 					bI: r.bI,
 					bK: r.bK,
-					_: r._
+					aa: r.aa
 				});
 		}
 	});
@@ -5948,7 +5948,7 @@ var elm$http$Http$subscription = _Platform_leaf('Http');
 var elm$http$Http$request = function (r) {
 	return elm$http$Http$command(
 		elm$http$Http$Request(
-			{C: false, a3: r.a3, ba: r.ba, bh: r.bh, bl: r.bl, bI: r.bI, bK: r.bK, _: r._}));
+			{C: false, a3: r.a3, ba: r.ba, bh: r.bh, bl: r.bl, bI: r.bI, bK: r.bK, aa: r.aa}));
 };
 var author$project$Presentation$init = function (flags) {
 	var model = A2(
@@ -5966,7 +5966,7 @@ var author$project$Presentation$init = function (flags) {
 			bl: 'GET',
 			bI: elm$core$Maybe$Nothing,
 			bK: elm$core$Maybe$Nothing,
-			_: flags._
+			aa: flags.aa
 		});
 	return _Utils_Tuple2(model, command);
 };
@@ -6674,7 +6674,7 @@ var author$project$Presentation$Kernel$fromList = function (slides) {
 		return elm$core$Maybe$Nothing;
 	}
 };
-var author$project$Presentation$Parser$NoSlides = 0;
+var author$project$Presentation$Parser$NoSlides = {$: 0};
 var author$project$Presentation$Parser$accumulatedGather = F2(
 	function (acc, xs) {
 		accumulatedGather:
@@ -6702,15 +6702,9 @@ var author$project$Presentation$Parser$gather = author$project$Presentation$Pars
 var author$project$Presentation$Kernel$Markdown = function (a) {
 	return {$: 1, a: a};
 };
-var dvberkel$microkanren$MicroKanren$Kernel$emptyState = {bg: 0, bF: elm$core$Dict$empty};
-var dvberkel$microkanren$MicroKanren$streamModelFromGoal = F2(
-	function (name, goal) {
-		return {
-			af: name,
-			P: _List_Nil,
-			I: goal(dvberkel$microkanren$MicroKanren$Kernel$emptyState)
-		};
-	});
+var author$project$Presentation$Parser$NoGoalKnown = function (a) {
+	return {$: 1, a: a};
+};
 var dvberkel$microkanren$MicroKanren$Kernel$Value = function (a) {
 	return {$: 1, a: a};
 };
@@ -6845,19 +6839,56 @@ var dvberkel$microkanren$MicroKanren$Kernel$identical = F2(
 			}
 		};
 	});
-var author$project$Presentation$Parser$parseGoal = function (input) {
-	var streamModel = A2(
-		dvberkel$microkanren$MicroKanren$streamModelFromGoal,
-		input,
+var author$project$Presentation$Parser$goals = A3(
+	elm$core$Dict$insert,
+	'identical_5',
+	_Utils_Tuple2(
+		'callFresh (\term -> identical term (Value 5))',
 		dvberkel$microkanren$MicroKanren$Kernel$callFresh(
 			function (term) {
 				return A2(
 					dvberkel$microkanren$MicroKanren$Kernel$identical,
 					term,
 					dvberkel$microkanren$MicroKanren$Kernel$Value(5));
-			}));
-	return elm$core$Result$Ok(
-		author$project$Presentation$Kernel$Stream(streamModel));
+			})),
+	elm$core$Dict$empty);
+var dvberkel$microkanren$MicroKanren$Kernel$emptyState = {bg: 0, bF: elm$core$Dict$empty};
+var dvberkel$microkanren$MicroKanren$streamModelFromGoal = F2(
+	function (name, goal) {
+		return {
+			ag: name,
+			P: _List_Nil,
+			I: goal(dvberkel$microkanren$MicroKanren$Kernel$emptyState)
+		};
+	});
+var elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (!maybeValue.$) {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return elm$core$Maybe$Nothing;
+		}
+	});
+var author$project$Presentation$Parser$parseGoal = function (input) {
+	var maybeGoal = A2(
+		elm$core$Maybe$andThen,
+		function (name) {
+			return A2(elm$core$Dict$get, name, author$project$Presentation$Parser$goals);
+		},
+		elm$core$List$head(
+			A2(elm$core$String$split, '\n', input)));
+	if (!maybeGoal.$) {
+		var _n1 = maybeGoal.a;
+		var description = _n1.a;
+		var goal = _n1.b;
+		var streamModel = A2(dvberkel$microkanren$MicroKanren$streamModelFromGoal, description, goal);
+		return elm$core$Result$Ok(
+			author$project$Presentation$Kernel$Stream(streamModel));
+	} else {
+		return elm$core$Result$Err(
+			author$project$Presentation$Parser$NoGoalKnown(input));
+	}
 };
 var author$project$Presentation$Parser$parseSlide = function (input) {
 	return A2(elm$core$String$startsWith, 'goal: ', input) ? author$project$Presentation$Parser$parseGoal(
@@ -6895,7 +6926,7 @@ var author$project$Presentation$Parser$parse = function (input) {
 	var toPresentation = A2(
 		elm$core$Basics$composeR,
 		author$project$Presentation$Kernel$fromList,
-		elm$core$Result$fromMaybe(0));
+		elm$core$Result$fromMaybe(author$project$Presentation$Parser$NoSlides));
 	return A2(
 		elm$core$Result$andThen,
 		toPresentation,
@@ -7433,16 +7464,6 @@ var author$project$Presentation$update = F2(
 		}
 	});
 var author$project$Presentation$TakeFromStream = {$: 3};
-var author$project$Presentation$Kernel$currentIndex = function (_n0) {
-	var preceding = _n0.p;
-	return 1 + elm$core$List$length(preceding);
-};
-var author$project$Presentation$Kernel$slideCount = function (_n0) {
-	var preceding = _n0.p;
-	var current = _n0.n;
-	var following = _n0.r;
-	return (elm$core$List$length(preceding) + 1) + elm$core$List$length(following);
-};
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -7456,6 +7477,81 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
+var elm$core$Tuple$second = function (_n0) {
+	var y = _n0.b;
+	return y;
+};
+var elm$html$Html$Attributes$classList = function (classes) {
+	return elm$html$Html$Attributes$class(
+		A2(
+			elm$core$String$join,
+			' ',
+			A2(
+				elm$core$List$map,
+				elm$core$Tuple$first,
+				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
+};
+var author$project$Presentation$viewStatus = function (status) {
+	var errorText = function () {
+		switch (status.$) {
+			case 3:
+				var error = status.a;
+				return elm$core$Maybe$Just('Request Failed');
+			case 4:
+				var error = status.a;
+				if (!error.$) {
+					return elm$core$Maybe$Just('No slides to parse');
+				} else {
+					var label = error.a;
+					return elm$core$Maybe$Just('no goal for label \'' + (label + '\''));
+				}
+			default:
+				return elm$core$Maybe$Nothing;
+		}
+	}();
+	if (!errorText.$) {
+		var text = errorText.a;
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('status', true),
+							_Utils_Tuple2('error', true)
+						]))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$span,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(text)
+						]))
+				]));
+	} else {
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('status')
+				]),
+			_List_Nil);
+	}
+};
+var author$project$Presentation$Kernel$currentIndex = function (_n0) {
+	var preceding = _n0.p;
+	return 1 + elm$core$List$length(preceding);
+};
+var author$project$Presentation$Kernel$slideCount = function (_n0) {
+	var preceding = _n0.p;
+	var current = _n0.n;
+	var following = _n0.r;
+	return (elm$core$List$length(preceding) + 1) + elm$core$List$length(following);
+};
 var author$project$Presentation$Kernel$viewCount = function (presentation) {
 	return A2(
 		elm$html$Html$div,
@@ -7685,20 +7781,6 @@ var dvberkel$microkanren$MicroKanren$viewStream = function (stream) {
 			]),
 		content);
 };
-var elm$core$Tuple$second = function (_n0) {
-	var y = _n0.b;
-	return y;
-};
-var elm$html$Html$Attributes$classList = function (classes) {
-	return elm$html$Html$Attributes$class(
-		A2(
-			elm$core$String$join,
-			' ',
-			A2(
-				elm$core$List$map,
-				elm$core$Tuple$first,
-				A2(elm$core$List$filter, elm$core$Tuple$second, classes))));
-};
 var dvberkel$microkanren$MicroKanren$view = F2(
 	function (stringify, model) {
 		return A2(
@@ -7722,7 +7804,7 @@ var dvberkel$microkanren$MicroKanren$view = F2(
 							_List_Nil,
 							_List_fromArray(
 								[
-									elm$html$Html$text(model.af)
+									elm$html$Html$text(model.ag)
 								]))
 						])),
 					A2(
@@ -7817,7 +7899,8 @@ var author$project$Presentation$view = function (model) {
 					return author$project$Presentation$TakeFromStream;
 				},
 				model.q),
-				author$project$Presentation$Kernel$viewInfo(model.q)
+				author$project$Presentation$Kernel$viewInfo(model.q),
+				author$project$Presentation$viewStatus(model._)
 			]));
 };
 var elm$browser$Browser$element = _Browser_element;
@@ -7829,6 +7912,6 @@ _Platform_export({'Presentation':{'init':author$project$Presentation$main(
 		elm$json$Json$Decode$andThen,
 		function (url) {
 			return elm$json$Json$Decode$succeed(
-				{_: url});
+				{aa: url});
 		},
 		A2(elm$json$Json$Decode$field, 'url', elm$json$Json$Decode$string)))(0)}});}(this));

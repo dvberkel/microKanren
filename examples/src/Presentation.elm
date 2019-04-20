@@ -9,7 +9,7 @@ import MicroKanren exposing (StreamModel, streamModelFromGoal)
 import MicroKanren.Kernel exposing (..)
 import Presentation.Debug exposing (viewKeys)
 import Presentation.Kernel exposing (..)
-import Presentation.Parser as Parser
+import Presentation.Parser as Parser exposing (Error(..))
 import Task exposing (Task)
 
 
@@ -88,8 +88,40 @@ view model =
     Html.div [ Attribute.class "presentation" ]
         [ viewPresentation (\_ -> TakeFromStream) model.presentation
         , viewInfo model.presentation
+        , viewStatus model.status
         ]
 
+
+viewStatus : Status -> Html msg
+viewStatus status =
+    let
+        errorText =
+            case status of
+                RequestFailure error ->
+                    Just "Request Failed"
+
+                ParseFailure error ->
+                    case error of
+                        NoSlides ->
+                            Just "No slides to parse"
+
+                        NoGoalKnown label ->
+                            Just <| "no goal for label '" ++ label ++ "'"
+
+                _ ->
+                    Nothing
+    in
+    case errorText of
+        Just text ->
+            Html.div
+                [ Attribute.classList
+                    [ ( "status", True )
+                    , ( "error", True )
+                    ]
+                ]
+                [ Html.span [] [ Html.text text ] ]
+        Nothing ->
+            Html.div [ Attribute.class "status" ] []
 
 
 {- UPDATE -}
