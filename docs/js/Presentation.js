@@ -6702,9 +6702,6 @@ var author$project$Presentation$Parser$gather = author$project$Presentation$Pars
 var author$project$Presentation$Kernel$Markdown = function (a) {
 	return {$: 1, a: a};
 };
-var author$project$Presentation$Parser$NoGoalKnown = function (a) {
-	return {$: 1, a: a};
-};
 var dvberkel$microkanren$MicroKanren$Kernel$Value = function (a) {
 	return {$: 1, a: a};
 };
@@ -6839,11 +6836,11 @@ var dvberkel$microkanren$MicroKanren$Kernel$identical = F2(
 			}
 		};
 	});
-var author$project$Presentation$Parser$goals = A3(
+var author$project$Presentation$Goals$goals = A3(
 	elm$core$Dict$insert,
 	'identical_5',
 	_Utils_Tuple2(
-		'callFresh (\term -> identical term (Value 5))',
+		'≡ t 5',
 		dvberkel$microkanren$MicroKanren$Kernel$callFresh(
 			function (term) {
 				return A2(
@@ -6852,6 +6849,9 @@ var author$project$Presentation$Parser$goals = A3(
 					dvberkel$microkanren$MicroKanren$Kernel$Value(5));
 			})),
 	elm$core$Dict$empty);
+var author$project$Presentation$Parser$NoGoalKnown = function (a) {
+	return {$: 1, a: a};
+};
 var dvberkel$microkanren$MicroKanren$Kernel$emptyState = {bg: 0, bF: elm$core$Dict$empty};
 var dvberkel$microkanren$MicroKanren$streamModelFromGoal = F2(
 	function (name, goal) {
@@ -6874,7 +6874,7 @@ var author$project$Presentation$Parser$parseGoal = function (input) {
 	var maybeGoal = A2(
 		elm$core$Maybe$andThen,
 		function (name) {
-			return A2(elm$core$Dict$get, name, author$project$Presentation$Parser$goals);
+			return A2(elm$core$Dict$get, name, author$project$Presentation$Goals$goals);
 		},
 		elm$core$List$head(
 			A2(elm$core$String$split, '\n', input)));

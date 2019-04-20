@@ -120,8 +120,10 @@ viewStatus status =
                     ]
                 ]
                 [ Html.span [] [ Html.text text ] ]
+
         Nothing ->
             Html.div [ Attribute.class "status" ] []
+
 
 
 {- UPDATE -}
