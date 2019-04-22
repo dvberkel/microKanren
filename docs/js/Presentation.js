@@ -6540,168 +6540,6 @@ var author$project$Presentation$toCommand = function (keys) {
 		}
 	}
 };
-var elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(x);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var elm$core$List$tail = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(xs);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var author$project$Presentation$Kernel$advance = function (original) {
-	var data = original;
-	if (elm$core$List$length(data.r) > 0) {
-		var nextPreceding = A2(elm$core$List$cons, data.n, data.p);
-		var nextFollowing = A2(
-			elm$core$Maybe$withDefault,
-			_List_Nil,
-			elm$core$List$tail(data.r));
-		var nextCurrent = A2(
-			elm$core$Maybe$withDefault,
-			author$project$Presentation$Kernel$Blank,
-			elm$core$List$head(data.r));
-		return _Utils_update(
-			data,
-			{n: nextCurrent, r: nextFollowing, p: nextPreceding});
-	} else {
-		return original;
-	}
-};
-var author$project$Presentation$Kernel$backtrack = function (original) {
-	var data = original;
-	if (elm$core$List$length(data.p) > 0) {
-		var nextPreceding = A2(
-			elm$core$Maybe$withDefault,
-			_List_Nil,
-			elm$core$List$tail(data.p));
-		var nextFollowing = A2(elm$core$List$cons, data.n, data.r);
-		var nextCurrent = A2(
-			elm$core$Maybe$withDefault,
-			author$project$Presentation$Kernel$Blank,
-			elm$core$List$head(data.p));
-		return _Utils_update(
-			data,
-			{n: nextCurrent, r: nextFollowing, p: nextPreceding});
-	} else {
-		return original;
-	}
-};
-var author$project$Presentation$Kernel$Stream = function (a) {
-	return {$: 2, a: a};
-};
-var dvberkel$microkanren$MicroKanren$TakeFromStream = 0;
-var dvberkel$microkanren$MicroKanren$Kernel$Empty = {$: 0};
-var dvberkel$microkanren$MicroKanren$UserLevel$pull = function (stream) {
-	pull:
-	while (true) {
-		if (stream.$ === 1) {
-			var lazyStream = stream.a;
-			var $temp$stream = lazyStream(0);
-			stream = $temp$stream;
-			continue pull;
-		} else {
-			return stream;
-		}
-	}
-};
-var dvberkel$microkanren$MicroKanren$update = F2(
-	function (_n0, model) {
-		var stream = dvberkel$microkanren$MicroKanren$UserLevel$pull(model.I);
-		if (stream.$ === 2) {
-			var state = stream.a;
-			var followingStream = stream.b;
-			return _Utils_update(
-				model,
-				{
-					P: _Utils_ap(
-						model.P,
-						_List_fromArray(
-							[state])),
-					I: followingStream
-				});
-		} else {
-			return _Utils_update(
-				model,
-				{I: dvberkel$microkanren$MicroKanren$Kernel$Empty});
-		}
-	});
-var author$project$Presentation$Kernel$takeFromStream = function (original) {
-	var data = original;
-	var _n0 = data.n;
-	if (_n0.$ === 2) {
-		var streamModel = _n0.a;
-		var nextStreamModel = A2(dvberkel$microkanren$MicroKanren$update, 0, streamModel);
-		var current = author$project$Presentation$Kernel$Stream(nextStreamModel);
-		return _Utils_update(
-			data,
-			{n: current});
-	} else {
-		return original;
-	}
-};
-var author$project$Presentation$Kernel$fromList = function (slides) {
-	if (elm$core$List$length(slides) > 0) {
-		var following = A2(
-			elm$core$Maybe$withDefault,
-			_List_Nil,
-			elm$core$List$tail(slides));
-		var current = A2(
-			elm$core$Maybe$withDefault,
-			author$project$Presentation$Kernel$Blank,
-			elm$core$List$head(slides));
-		return elm$core$Maybe$Just(
-			{n: current, r: following, p: _List_Nil});
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var author$project$Presentation$Parser$NoSlides = {$: 0};
-var author$project$Presentation$Parser$accumulatedGather = F2(
-	function (acc, xs) {
-		accumulatedGather:
-		while (true) {
-			if (!xs.b) {
-				return elm$core$Result$Ok(
-					elm$core$List$reverse(acc));
-			} else {
-				if (xs.a.$ === 1) {
-					var e = xs.a.a;
-					return elm$core$Result$Err(e);
-				} else {
-					var x = xs.a.a;
-					var tail = xs.b;
-					var $temp$acc = A2(elm$core$List$cons, x, acc),
-						$temp$xs = tail;
-					acc = $temp$acc;
-					xs = $temp$xs;
-					continue accumulatedGather;
-				}
-			}
-		}
-	});
-var author$project$Presentation$Parser$gather = author$project$Presentation$Parser$accumulatedGather(_List_Nil);
-var author$project$Presentation$Kernel$Markdown = function (a) {
-	return {$: 1, a: a};
-};
 var dvberkel$microkanren$MicroKanren$Kernel$Value = function (a) {
 	return {$: 1, a: a};
 };
@@ -6718,6 +6556,7 @@ var dvberkel$microkanren$MicroKanren$Kernel$callFresh = function (f) {
 				{bg: state.bg + 1}));
 	};
 };
+var dvberkel$microkanren$MicroKanren$Kernel$Empty = {$: 0};
 var dvberkel$microkanren$MicroKanren$Kernel$mzero = dvberkel$microkanren$MicroKanren$Kernel$Empty;
 var dvberkel$microkanren$MicroKanren$Kernel$extend = F3(
 	function (variable, term, substitution) {
@@ -6849,6 +6688,167 @@ var author$project$Presentation$Goals$goals = A3(
 					dvberkel$microkanren$MicroKanren$Kernel$Value(5));
 			})),
 	elm$core$Dict$empty);
+var elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return elm$core$Maybe$Just(x);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var elm$core$List$tail = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return elm$core$Maybe$Just(xs);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var author$project$Presentation$Kernel$advance = function (original) {
+	var data = original;
+	if (elm$core$List$length(data.r) > 0) {
+		var nextPreceding = A2(elm$core$List$cons, data.n, data.p);
+		var nextFollowing = A2(
+			elm$core$Maybe$withDefault,
+			_List_Nil,
+			elm$core$List$tail(data.r));
+		var nextCurrent = A2(
+			elm$core$Maybe$withDefault,
+			author$project$Presentation$Kernel$Blank,
+			elm$core$List$head(data.r));
+		return _Utils_update(
+			data,
+			{n: nextCurrent, r: nextFollowing, p: nextPreceding});
+	} else {
+		return original;
+	}
+};
+var author$project$Presentation$Kernel$backtrack = function (original) {
+	var data = original;
+	if (elm$core$List$length(data.p) > 0) {
+		var nextPreceding = A2(
+			elm$core$Maybe$withDefault,
+			_List_Nil,
+			elm$core$List$tail(data.p));
+		var nextFollowing = A2(elm$core$List$cons, data.n, data.r);
+		var nextCurrent = A2(
+			elm$core$Maybe$withDefault,
+			author$project$Presentation$Kernel$Blank,
+			elm$core$List$head(data.p));
+		return _Utils_update(
+			data,
+			{n: nextCurrent, r: nextFollowing, p: nextPreceding});
+	} else {
+		return original;
+	}
+};
+var author$project$Presentation$Kernel$Stream = function (a) {
+	return {$: 2, a: a};
+};
+var dvberkel$microkanren$MicroKanren$TakeFromStream = 0;
+var dvberkel$microkanren$MicroKanren$UserLevel$pull = function (stream) {
+	pull:
+	while (true) {
+		if (stream.$ === 1) {
+			var lazyStream = stream.a;
+			var $temp$stream = lazyStream(0);
+			stream = $temp$stream;
+			continue pull;
+		} else {
+			return stream;
+		}
+	}
+};
+var dvberkel$microkanren$MicroKanren$update = F2(
+	function (_n0, model) {
+		var stream = dvberkel$microkanren$MicroKanren$UserLevel$pull(model.I);
+		if (stream.$ === 2) {
+			var state = stream.a;
+			var followingStream = stream.b;
+			return _Utils_update(
+				model,
+				{
+					P: _Utils_ap(
+						model.P,
+						_List_fromArray(
+							[state])),
+					I: followingStream
+				});
+		} else {
+			return _Utils_update(
+				model,
+				{I: dvberkel$microkanren$MicroKanren$Kernel$Empty});
+		}
+	});
+var author$project$Presentation$Kernel$takeFromStream = function (original) {
+	var data = original;
+	var _n0 = data.n;
+	if (_n0.$ === 2) {
+		var streamModel = _n0.a;
+		var nextStreamModel = A2(dvberkel$microkanren$MicroKanren$update, 0, streamModel);
+		var current = author$project$Presentation$Kernel$Stream(nextStreamModel);
+		return _Utils_update(
+			data,
+			{n: current});
+	} else {
+		return original;
+	}
+};
+var author$project$Presentation$Kernel$fromList = function (slides) {
+	if (elm$core$List$length(slides) > 0) {
+		var following = A2(
+			elm$core$Maybe$withDefault,
+			_List_Nil,
+			elm$core$List$tail(slides));
+		var current = A2(
+			elm$core$Maybe$withDefault,
+			author$project$Presentation$Kernel$Blank,
+			elm$core$List$head(slides));
+		return elm$core$Maybe$Just(
+			{n: current, r: following, p: _List_Nil});
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var author$project$Presentation$Parser$NoSlides = {$: 0};
+var author$project$Presentation$Parser$accumulatedGather = F2(
+	function (acc, xs) {
+		accumulatedGather:
+		while (true) {
+			if (!xs.b) {
+				return elm$core$Result$Ok(
+					elm$core$List$reverse(acc));
+			} else {
+				if (xs.a.$ === 1) {
+					var e = xs.a.a;
+					return elm$core$Result$Err(e);
+				} else {
+					var x = xs.a.a;
+					var tail = xs.b;
+					var $temp$acc = A2(elm$core$List$cons, x, acc),
+						$temp$xs = tail;
+					acc = $temp$acc;
+					xs = $temp$xs;
+					continue accumulatedGather;
+				}
+			}
+		}
+	});
+var author$project$Presentation$Parser$gather = author$project$Presentation$Parser$accumulatedGather(_List_Nil);
+var author$project$Presentation$Kernel$Markdown = function (a) {
+	return {$: 1, a: a};
+};
 var author$project$Presentation$Parser$NoGoalKnown = function (a) {
 	return {$: 1, a: a};
 };
@@ -6870,39 +6870,50 @@ var elm$core$Maybe$andThen = F2(
 			return elm$core$Maybe$Nothing;
 		}
 	});
-var author$project$Presentation$Parser$parseGoal = function (input) {
-	var maybeGoal = A2(
-		elm$core$Maybe$andThen,
-		function (name) {
-			return A2(elm$core$Dict$get, name, author$project$Presentation$Goals$goals);
-		},
-		elm$core$List$head(
-			A2(elm$core$String$split, '\n', input)));
-	if (!maybeGoal.$) {
-		var _n1 = maybeGoal.a;
-		var description = _n1.a;
-		var goal = _n1.b;
-		var streamModel = A2(dvberkel$microkanren$MicroKanren$streamModelFromGoal, description, goal);
-		return elm$core$Result$Ok(
-			author$project$Presentation$Kernel$Stream(streamModel));
-	} else {
-		return elm$core$Result$Err(
-			author$project$Presentation$Parser$NoGoalKnown(input));
-	}
-};
-var author$project$Presentation$Parser$parseSlide = function (input) {
-	return A2(elm$core$String$startsWith, 'goal: ', input) ? author$project$Presentation$Parser$parseGoal(
-		A2(elm$core$String$dropLeft, 6, input)) : elm$core$Result$Ok(
-		author$project$Presentation$Kernel$Markdown(input));
-};
-var author$project$Presentation$Parser$parseMultipleSlides = function (inputs) {
-	return author$project$Presentation$Parser$gather(
-		A2(elm$core$List$map, author$project$Presentation$Parser$parseSlide, inputs));
-};
-var author$project$Presentation$Parser$parseSlides = function (input) {
-	return author$project$Presentation$Parser$parseMultipleSlides(
-		A2(elm$core$String$split, '---\n', input));
-};
+var author$project$Presentation$Parser$parseGoal = F2(
+	function (goals, input) {
+		var maybeGoal = A2(
+			elm$core$Maybe$andThen,
+			function (name) {
+				return A2(elm$core$Dict$get, name, goals);
+			},
+			elm$core$List$head(
+				A2(elm$core$String$split, '\n', input)));
+		if (!maybeGoal.$) {
+			var _n1 = maybeGoal.a;
+			var description = _n1.a;
+			var goal = _n1.b;
+			var streamModel = A2(dvberkel$microkanren$MicroKanren$streamModelFromGoal, description, goal);
+			return elm$core$Result$Ok(
+				author$project$Presentation$Kernel$Stream(streamModel));
+		} else {
+			return elm$core$Result$Err(
+				author$project$Presentation$Parser$NoGoalKnown(input));
+		}
+	});
+var author$project$Presentation$Parser$parseSlide = F2(
+	function (goals, input) {
+		return A2(elm$core$String$startsWith, 'goal: ', input) ? A2(
+			author$project$Presentation$Parser$parseGoal,
+			goals,
+			A2(elm$core$String$dropLeft, 6, input)) : elm$core$Result$Ok(
+			author$project$Presentation$Kernel$Markdown(input));
+	});
+var author$project$Presentation$Parser$parseMultipleSlides = F2(
+	function (goals, inputs) {
+		return author$project$Presentation$Parser$gather(
+			A2(
+				elm$core$List$map,
+				author$project$Presentation$Parser$parseSlide(goals),
+				inputs));
+	});
+var author$project$Presentation$Parser$parseSlides = F2(
+	function (goals, input) {
+		return A2(
+			author$project$Presentation$Parser$parseMultipleSlides,
+			goals,
+			A2(elm$core$String$split, '---\n', input));
+	});
 var elm$core$Result$andThen = F2(
 	function (callback, result) {
 		if (!result.$) {
@@ -6922,16 +6933,17 @@ var elm$core$Result$fromMaybe = F2(
 			return elm$core$Result$Err(err);
 		}
 	});
-var author$project$Presentation$Parser$parse = function (input) {
-	var toPresentation = A2(
-		elm$core$Basics$composeR,
-		author$project$Presentation$Kernel$fromList,
-		elm$core$Result$fromMaybe(author$project$Presentation$Parser$NoSlides));
-	return A2(
-		elm$core$Result$andThen,
-		toPresentation,
-		author$project$Presentation$Parser$parseSlides(input));
-};
+var author$project$Presentation$Parser$parse = F2(
+	function (goals, input) {
+		var toPresentation = A2(
+			elm$core$Basics$composeR,
+			author$project$Presentation$Kernel$fromList,
+			elm$core$Result$fromMaybe(author$project$Presentation$Parser$NoSlides));
+		return A2(
+			elm$core$Result$andThen,
+			toPresentation,
+			A2(author$project$Presentation$Parser$parseSlides, goals, input));
+	});
 var elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (!maybe.$) {
@@ -7410,7 +7422,7 @@ var author$project$Presentation$update = F2(
 				}
 			case 5:
 				var source = message.a;
-				var _n2 = author$project$Presentation$Parser$parse(source);
+				var _n2 = A2(author$project$Presentation$Parser$parse, author$project$Presentation$Goals$goals, source);
 				if (!_n2.$) {
 					var presentation = _n2.a;
 					var nextModel = A2(

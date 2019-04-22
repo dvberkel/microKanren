@@ -8,6 +8,7 @@ import Keyboard exposing (Key(..))
 import MicroKanren exposing (StreamModel, streamModelFromGoal)
 import MicroKanren.Kernel exposing (..)
 import Presentation.Debug exposing (viewKeys)
+import Presentation.Goals exposing (goals)
 import Presentation.Kernel exposing (..)
 import Presentation.Parser as Parser exposing (Error(..))
 import Task exposing (Task)
@@ -163,7 +164,7 @@ update message model =
                     ( nextModel, Cmd.none )
 
         Parse source ->
-            case Parser.parse source of
+            case Parser.parse goals source of
                 Ok presentation ->
                     let
                         nextModel =

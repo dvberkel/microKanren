@@ -1,9 +1,8 @@
 module Presentation.Parser exposing (Error(..), parse)
 
-import Dict
+import Dict exposing (Dict)
 import MicroKanren exposing (streamModelFromGoal)
 import MicroKanren.Kernel exposing (..)
-import Presentation.Goals exposing (goals)
 import Presentation.Kernel as Presentation exposing (Presentation, Slide(..))
 
 
@@ -12,43 +11,43 @@ type Error
     | NoGoalKnown String
 
 
-parse : String -> Result Error Presentation
-parse input =
+parse : Dict String (String, Goal Int) -> String -> Result Error Presentation
+parse goals input =
     let
         toPresentation =
             Presentation.fromList
                 >> Result.fromMaybe NoSlides
     in
     input
-        |> parseSlides
+        |> parseSlides goals
         |> Result.andThen toPresentation
 
 
-parseSlides : String -> Result Error (List Slide)
-parseSlides input =
+parseSlides : Dict String (String, Goal Int) -> String -> Result Error (List Slide)
+parseSlides goals input =
     input
         |> String.split "---\n"
-        |> parseMultipleSlides
+        |> parseMultipleSlides goals
 
 
-parseMultipleSlides : List String -> Result Error (List Slide)
-parseMultipleSlides inputs =
+parseMultipleSlides : Dict String (String, Goal Int) -> List String -> Result Error (List Slide)
+parseMultipleSlides goals inputs =
     inputs
-        |> List.map parseSlide
+        |> List.map (parseSlide goals)
         |> gather
 
 
-parseSlide : String -> Result Error Slide
-parseSlide input =
+parseSlide : Dict String (String, Goal Int) -> String -> Result Error Slide
+parseSlide goals input =
     if String.startsWith "goal: " input then
-        parseGoal <| String.dropLeft 6 input
+        parseGoal goals <| String.dropLeft 6 input
 
     else
         Ok <| Markdown input
 
 
-parseGoal : String -> Result Error Slide
-parseGoal input =
+parseGoal : Dict String (String, Goal Int) -> String -> Result Error Slide
+parseGoal goals input =
     let
         maybeGoal =
             input
