@@ -134,12 +134,12 @@ takeFromStream ((Presentation data) as original) =
 
 
 viewPresentation : (Message -> msg) -> Presentation -> Html msg
-viewPresentation messageMap (Presentation data) =
-    viewSlide messageMap data.current
+viewPresentation messageMap ((Presentation data) as presentation) =
+    viewSlide messageMap (currentIndex presentation) data.current
 
 
-viewSlide : (Message -> msg) -> Slide -> Html msg
-viewSlide messageMap slide =
+viewSlide : (Message -> msg) -> Int -> Slide -> Html msg
+viewSlide messageMap index slide =
     let
         content =
             case slide of
@@ -147,7 +147,13 @@ viewSlide messageMap slide =
                     []
 
                 Markdown source ->
-                    [ TransformMarkdown.toHtml [ Attribute.class "content" ] source
+                    [ TransformMarkdown.toHtml
+                        [ Attribute.classList
+                            [ ( "content", True )
+                            , ( "first", index == 1 )
+                            ]
+                        ]
+                        source
                     ]
 
                 Stream streamModel ->

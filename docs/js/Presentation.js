@@ -7848,8 +7848,8 @@ var elm_explorations$markdown$Markdown$defaultOptions = {
 };
 var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Presentation$Kernel$viewSlide = F2(
-	function (messageMap, slide) {
+var author$project$Presentation$Kernel$viewSlide = F3(
+	function (messageMap, index, slide) {
 		var content = function () {
 			switch (slide.$) {
 				case 0:
@@ -7862,7 +7862,12 @@ var author$project$Presentation$Kernel$viewSlide = F2(
 							elm_explorations$markdown$Markdown$toHtml,
 							_List_fromArray(
 								[
-									elm$html$Html$Attributes$class('content')
+									elm$html$Html$Attributes$classList(
+									_List_fromArray(
+										[
+											_Utils_Tuple2('content', true),
+											_Utils_Tuple2('first', index === 1)
+										]))
 								]),
 							source)
 						]);
@@ -7892,9 +7897,13 @@ var author$project$Presentation$Kernel$viewSlide = F2(
 			content);
 	});
 var author$project$Presentation$Kernel$viewPresentation = F2(
-	function (messageMap, _n0) {
-		var data = _n0;
-		return A2(author$project$Presentation$Kernel$viewSlide, messageMap, data.n);
+	function (messageMap, presentation) {
+		var data = presentation;
+		return A3(
+			author$project$Presentation$Kernel$viewSlide,
+			messageMap,
+			author$project$Presentation$Kernel$currentIndex(presentation),
+			data.n);
 	});
 var author$project$Presentation$view = function (model) {
 	return A2(
