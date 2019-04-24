@@ -5430,7 +5430,7 @@ var dvberkel$microkanren$MicroKanren$viewStream = function (stream) {
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('stream')
+				elm$html$Html$Attributes$class('control')
 			]),
 		content);
 };

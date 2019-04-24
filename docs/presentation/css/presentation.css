@@ -32,8 +32,49 @@
     content: "”";
 }
 
-.content p, .content code {
+.content p, .content code, .stream {
     font-size: 150%;
+}
+
+.stream {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.stream .name, .stream .control {
+    text-align: center;
+}
+
+.stream .seen.states {
+    display: flex;
+    flex-direction: row;
+    flex-wrap : nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.stream .seen.states .state {
+    border-style: solid;
+    border-color: rgb(80%, 80%, 80%);
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 0.5em;
+}
+
+.stream .seen.states .state:last-child {
+    margin-right: 0;
+}
+
+.stream .seen.states .state .fresh {
+    display: block;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(80%, 80%, 80%);
+    border-bottom-width: 1px;
+    
 }
 
 .info {

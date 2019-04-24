@@ -185,7 +185,7 @@ toClassName slide =
             "markdown"
 
         Stream _ ->
-            "stream"
+            "streammodel"
 
 
 viewInfo : Presentation -> Html msg

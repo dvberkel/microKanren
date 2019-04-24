@@ -6681,19 +6681,86 @@ var dvberkel$microkanren$MicroKanren$Kernel$identical = F2(
 			}
 		};
 	});
+var dvberkel$microkanren$MicroKanren$Kernel$Immature = function (a) {
+	return {$: 1, a: a};
+};
+var dvberkel$microkanren$MicroKanren$Kernel$mplus = F2(
+	function (left, right) {
+		switch (left.$) {
+			case 0:
+				return right;
+			case 1:
+				var lazyStream = left.a;
+				return dvberkel$microkanren$MicroKanren$Kernel$Immature(
+					function (_n1) {
+						return A2(
+							dvberkel$microkanren$MicroKanren$Kernel$mplus,
+							right,
+							lazyStream(0));
+					});
+			default:
+				var state = left.a;
+				var followingStream = left.b;
+				return A2(
+					dvberkel$microkanren$MicroKanren$Kernel$Mature,
+					state,
+					A2(dvberkel$microkanren$MicroKanren$Kernel$mplus, right, followingStream));
+		}
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$disjoin = F2(
+	function (left, right) {
+		return function (state) {
+			return A2(
+				dvberkel$microkanren$MicroKanren$Kernel$mplus,
+				left(state),
+				right(state));
+		};
+	});
+var dvberkel$microkanren$MicroKanren$UserLevel$zzz = function (goal) {
+	return function (state) {
+		return dvberkel$microkanren$MicroKanren$Kernel$Immature(
+			function (_n0) {
+				return A2(goal, 0, state);
+			});
+	};
+};
+var dvberkel$microkanren$MicroKanren$Util$natFrom = function (start) {
+	return function (term) {
+		return A2(
+			dvberkel$microkanren$MicroKanren$Kernel$disjoin,
+			A2(
+				dvberkel$microkanren$MicroKanren$Kernel$identical,
+				term,
+				dvberkel$microkanren$MicroKanren$Kernel$Value(start)),
+			dvberkel$microkanren$MicroKanren$UserLevel$zzz(
+				function (_n0) {
+					return A2(dvberkel$microkanren$MicroKanren$Util$natFrom, start + 1, term);
+				}));
+	};
+};
+var dvberkel$microkanren$MicroKanren$Util$nat = dvberkel$microkanren$MicroKanren$Util$natFrom(0);
 var author$project$Presentation$Goals$goals = A3(
 	elm$core$Dict$insert,
-	'identical_5',
+	'nat',
 	_Utils_Tuple2(
-		'≡ t 5',
+		'nat t',
 		dvberkel$microkanren$MicroKanren$Kernel$callFresh(
 			function (term) {
-				return A2(
-					dvberkel$microkanren$MicroKanren$Kernel$identical,
-					term,
-					dvberkel$microkanren$MicroKanren$Kernel$Value(5));
+				return dvberkel$microkanren$MicroKanren$Util$nat(term);
 			})),
-	elm$core$Dict$empty);
+	A3(
+		elm$core$Dict$insert,
+		'identical_5',
+		_Utils_Tuple2(
+			'≡ t 5',
+			dvberkel$microkanren$MicroKanren$Kernel$callFresh(
+				function (term) {
+					return A2(
+						dvberkel$microkanren$MicroKanren$Kernel$identical,
+						term,
+						dvberkel$microkanren$MicroKanren$Kernel$Value(5));
+				})),
+		elm$core$Dict$empty));
 var elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -7628,7 +7695,7 @@ var author$project$Presentation$Kernel$toClassName = function (slide) {
 		case 1:
 			return 'markdown';
 		default:
-			return 'stream';
+			return 'streammodel';
 	}
 };
 var dvberkel$microkanren$MicroKanren$termToString = F2(
@@ -7799,7 +7866,7 @@ var dvberkel$microkanren$MicroKanren$viewStream = function (stream) {
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('stream')
+				elm$html$Html$Attributes$class('control')
 			]),
 		content);
 };
