@@ -20,15 +20,21 @@
 ### Prolog
 
 ```prolog
-move(1, X, _, Z, [[X, Z]]).
-move(N, X, Y, Z, P) :-
-    M is (N - 1),
-    move(M, X, Z, Y, P1),
-    move(1, X, Y, Z, P2),
-    move(M, Y, X, Z, P3),
-    append(P1, P2, Q),
-    append(Q, P3, P).
+ancestor(X, Z) :- parent(X, Z).
+ancestor(X, Z) :- parent(Y, Z), ancestor(X, Y).
+
+related(X, Y) :- ancestor(Z, X), ancestor(Z, Y).
+
+parent(renee, femke).
+parent(renee, daan).
+parent(femke, lars).
+parent(femke, joost).
+parent(daan, sophie).
+parent(daan, robin).
+parent(daan, hannah).
 ```
+
+[swish](https://swish.swi-prolog.org)
 
 ---
 goal: identical_5
