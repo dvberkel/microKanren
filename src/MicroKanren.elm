@@ -144,7 +144,7 @@ viewStream stream =
                     , button
                     ]
     in
-    Html.div [ Attribute.class "stream" ] content
+    Html.div [ Attribute.class "control" ] content
 
 
 

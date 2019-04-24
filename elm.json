@@ -7,7 +7,8 @@
     "exposed-modules" : [
         "MicroKanren",
         "MicroKanren.Kernel",
-        "MicroKanren.UserLevel"
+        "MicroKanren.UserLevel",
+        "MicroKanren.Util"
     ],
     "source-directories": [
         "src"

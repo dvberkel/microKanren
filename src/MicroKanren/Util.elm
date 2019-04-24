@@ -1,5 +1,11 @@
 module MicroKanren.Util exposing (nat)
 
+{-| Various utilities such
+
+@docs nat
+
+-}
+
 import MicroKanren.Kernel exposing (Goal, Stream(..), Term(..), callFresh, disjoin, identical)
 import MicroKanren.UserLevel exposing (zzz)
 
