@@ -8,6 +8,30 @@
     text-align: center;
 }
 
+.content h2 {
+    font-size: 300%;
+}
+
+.content blockquote {
+    background-color: rgb(80%, 80%, 80%);
+    border-left-color: rgb(20%, 20%, 20%);
+    border-left-style: solid;
+    border-left-width: 3px;
+    padding: 3em;
+}
+
+.content blockquote p:first-child::before {
+    content: "“"
+}
+
+.content blockquote p:last-child::after {
+    content: "”";
+}
+
+.content p {
+    font-size: 150%;
+}
+
 .info {
     position: absolute;
     bottom: 0px;
