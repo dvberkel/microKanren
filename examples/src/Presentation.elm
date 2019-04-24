@@ -1,4 +1,4 @@
-module Presentation exposing (main)
+port module Presentation exposing (main)
 
 import Browser
 import Html exposing (Html)
@@ -204,14 +204,14 @@ update message model =
                 nextModel =
                     { model | presentation = advance model.presentation }
             in
-            ( nextModel, Cmd.none )
+            ( nextModel, slideChanged () )
 
         Backtrack ->
             let
                 nextModel =
                     { model | presentation = backtrack model.presentation }
             in
-            ( nextModel, Cmd.none )
+            ( nextModel, slideChanged ())
 
         TakeFromStream ->
             let
@@ -239,6 +239,9 @@ toCommand keys =
 
 
 {- SUBSCRIPTIONS -}
+
+
+port slideChanged : () -> Cmd msg
 
 
 subscriptions : Model -> Sub Message
