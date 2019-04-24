@@ -12,6 +12,10 @@
     font-size: 300%;
 }
 
+.content h3 {
+    font-size: 200%;
+}
+
 .content blockquote {
     background-color: rgb(80%, 80%, 80%);
     border-left-color: rgb(20%, 20%, 20%);
@@ -28,7 +32,7 @@
     content: "”";
 }
 
-.content p {
+.content p, .content code {
     font-size: 150%;
 }
 
