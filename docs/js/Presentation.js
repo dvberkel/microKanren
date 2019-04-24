@@ -6514,6 +6514,12 @@ var author$project$Presentation$RequestFailure = function (a) {
 	return {$: 3, a: a};
 };
 var author$project$Presentation$RequestSuccess = {$: 2};
+var elm$json$Json$Encode$null = _Json_encodeNull;
+var author$project$Presentation$slideChanged = _Platform_outgoingPort(
+	'slideChanged',
+	function ($) {
+		return elm$json$Json$Encode$null;
+	});
 var author$project$Presentation$Advance = {$: 1};
 var author$project$Presentation$Backtrack = {$: 2};
 var author$project$Presentation$toCommand = function (keys) {
@@ -7458,14 +7464,18 @@ var author$project$Presentation$update = F2(
 					{
 						q: author$project$Presentation$Kernel$advance(model.q)
 					});
-				return _Utils_Tuple2(nextModel, elm$core$Platform$Cmd$none);
+				return _Utils_Tuple2(
+					nextModel,
+					author$project$Presentation$slideChanged(0));
 			case 2:
 				var nextModel = _Utils_update(
 					model,
 					{
 						q: author$project$Presentation$Kernel$backtrack(model.q)
 					});
-				return _Utils_Tuple2(nextModel, elm$core$Platform$Cmd$none);
+				return _Utils_Tuple2(
+					nextModel,
+					author$project$Presentation$slideChanged(0));
 			default:
 				var nextModel = _Utils_update(
 					model,

@@ -4,4 +4,9 @@
         node: node,
         flags: {url: "presentation.md"}
     });
-})();
+    app.ports.slideChanged.subscribe(function(data){
+        document.querySelectorAll('pre code').forEach(function(block){
+            hljs.highlightBlock(block);
+        });
+    });
+})();  
