@@ -41,12 +41,9 @@ type alias Flags =
 init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Message )
 init flags origin key =
     let
-        base =
-            { origin | query = Nothing, fragment = Nothing }
-
         model =
             emptyPresentation
-                |> createModel base key
+                |> createModel origin key
                 |> updateStatus Loading
 
         command =
@@ -182,8 +179,15 @@ update message model =
             case Parser.parse goals source of
                 Ok presentation ->
                     let
+                        aPresentation =
+                            model.base.fragment
+                            |> Maybe.andThen String.toInt
+                            |> Maybe.map (\targetIndex -> jump targetIndex presentation)
+                            |> Maybe.withDefault presentation
+
+
                         nextModel =
-                            createModel model.base model.navigationKey presentation
+                            createModel model.base model.navigationKey aPresentation
                                 |> updateStatus Idle
                     in
                     ( nextModel, Cmd.none )

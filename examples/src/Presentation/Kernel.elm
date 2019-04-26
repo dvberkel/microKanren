@@ -1,4 +1,4 @@
-module Presentation.Kernel exposing (Presentation(..), Slide(..), advance, backtrack, currentIndex, emptyPresentation, fromList, slideCount, takeFromStream, toClassName, viewCount, viewInfo, viewPresentation, viewSlide)
+module Presentation.Kernel exposing (Presentation(..), Slide(..), advance, backtrack, currentIndex, emptyPresentation, fromList, jump, slideCount, takeFromStream, toClassName, viewCount, viewInfo, viewPresentation, viewSlide)
 
 import Html exposing (Html)
 import Html.Attributes as Attribute
