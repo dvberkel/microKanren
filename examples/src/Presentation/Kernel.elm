@@ -106,6 +106,28 @@ advance ((Presentation data) as original) =
         original
 
 
+jump : Int -> Presentation -> Presentation
+jump index presentation =
+    if 1 <= index && index <= slideCount presentation then
+        skipTo index presentation
+
+    else
+        presentation
+
+
+skipTo : Int -> Presentation -> Presentation
+skipTo targetIndex presentation =
+    case compare (currentIndex presentation) targetIndex of
+        LT ->
+            skipTo targetIndex (advance presentation)
+
+        EQ ->
+            presentation
+
+        GT ->
+            skipTo targetIndex (backtrack presentation)
+
+
 currentIndex : Presentation -> Int
 currentIndex (Presentation { preceding }) =
     1 + List.length preceding
