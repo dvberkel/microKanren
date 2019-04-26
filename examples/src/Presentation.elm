@@ -38,11 +38,11 @@ type alias Flags =
 
 
 init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Message )
-init flags _ _ =
+init flags _ key =
     let
         model =
             emptyPresentation
-                |> createModel
+                |> createModel key
                 |> updateStatus Loading
 
         command =
@@ -60,7 +60,8 @@ init flags _ _ =
 
 
 type alias Model =
-    { status : Status
+    { navigationKey : Navigation.Key
+    , status : Status
     , pressedKeys : List Key
     , presentation : Presentation
     }
@@ -74,9 +75,9 @@ type Status
     | ParseFailure Parser.Error
 
 
-createModel : Presentation -> Model
-createModel presentation =
-    { status = Idle, pressedKeys = [], presentation = presentation }
+createModel : Navigation.Key -> Presentation -> Model
+createModel navigationKey presentation =
+    { navigationKey = navigationKey, status = Idle, pressedKeys = [], presentation = presentation }
 
 
 updateStatus : Status -> Model -> Model
@@ -177,7 +178,7 @@ update message model =
                 Ok presentation ->
                     let
                         nextModel =
-                            createModel presentation
+                            createModel model.navigationKey presentation
                                 |> updateStatus Idle
                     in
                     ( nextModel, Cmd.none )
