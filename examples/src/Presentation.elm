@@ -14,6 +14,7 @@ import Presentation.Kernel exposing (..)
 import Presentation.Parser as Parser exposing (Error(..))
 import Task exposing (Task)
 import Url exposing (Url)
+import Url.Builder as UrlBuilder exposing (Root(..))
 
 
 main : Program Flags Model Message
@@ -40,7 +41,8 @@ type alias Flags =
 init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Message )
 init flags origin key =
     let
-        base = { origin | query = Nothing, fragment = Nothing}
+        base =
+            { origin | query = Nothing, fragment = Nothing }
 
         model =
             emptyPresentation
@@ -80,7 +82,7 @@ type Status
 
 createModel : Url -> Navigation.Key -> Presentation -> Model
 createModel base navigationKey presentation =
-    { base = base,  navigationKey = navigationKey, status = Idle, pressedKeys = [], presentation = presentation }
+    { base = base, navigationKey = navigationKey, status = Idle, pressedKeys = [], presentation = presentation }
 
 
 updateStatus : Status -> Model -> Model
@@ -214,17 +216,43 @@ update message model =
 
         Advance ->
             let
+                presentation =
+                    advance model.presentation
+
                 nextModel =
-                    { model | presentation = advance model.presentation }
+                    { model | presentation = presentation }
+
+                index =
+                    currentIndex presentation
+                        |> String.fromInt
+
+                url =
+                    UrlBuilder.custom Relative [] [] (Just index)
+
+                navigationCommand =
+                    Navigation.pushUrl model.navigationKey url
             in
-            ( nextModel, slideChanged () )
+            ( nextModel, Cmd.batch [ slideChanged (), navigationCommand ] )
 
         Backtrack ->
             let
+                presentation =
+                    backtrack model.presentation
+
                 nextModel =
-                    { model | presentation = backtrack model.presentation }
+                    { model | presentation = presentation }
+
+                index =
+                    currentIndex presentation
+                        |> String.fromInt
+
+                url =
+                    UrlBuilder.custom Relative [] [] (Just index)
+
+                navigationCommand =
+                    Navigation.pushUrl model.navigationKey url
             in
-            ( nextModel, slideChanged () )
+            ( nextModel, Cmd.batch [ slideChanged (), navigationCommand ] )
 
         TakeFromStream ->
             let

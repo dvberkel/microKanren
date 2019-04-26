@@ -2331,9 +2331,9 @@ var _Http_toTask = F3(function(router, toTask, request)
 		elm$core$Maybe$isJust(request.bM) && _Http_track(router, xhr, request.bM.a);
 
 		try {
-			xhr.open(request.bm, request.aa, true);
+			xhr.open(request.bm, request.ab, true);
 		} catch (e) {
-			return done(elm$http$Http$BadUrl_(request.aa));
+			return done(elm$http$Http$BadUrl_(request.ab));
 		}
 
 		_Http_configureRequest(xhr, request);
@@ -2377,7 +2377,7 @@ function _Http_toResponse(toBody, xhr)
 function _Http_toMetadata(xhr)
 {
 	return {
-		aa: xhr.responseURL,
+		ab: xhr.responseURL,
 		aX: xhr.status,
 		bF: xhr.statusText,
 		bi: _Http_parseHeaders(xhr.getAllResponseHeaders())
@@ -4098,7 +4098,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 		impl.bN,
 		impl.bG,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.Q && impl.Q(sendToApp)
+			var divertHrefToApp = impl.R && impl.R(sendToApp)
 			var view = impl.bO;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
@@ -4173,7 +4173,7 @@ function _Browser_application(impl)
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		Q: function(sendToApp)
+		R: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4364,8 +4364,8 @@ function _Browser_getViewport()
 	return {
 		aV: _Browser_getScene(),
 		a0: {
-			ab: _Browser_window.pageXOffset,
-			ac: _Browser_window.pageYOffset,
+			ac: _Browser_window.pageXOffset,
+			ad: _Browser_window.pageYOffset,
 			K: _Browser_doc.documentElement.clientWidth,
 			E: _Browser_doc.documentElement.clientHeight
 		}
@@ -4406,8 +4406,8 @@ function _Browser_getViewportOf(id)
 				E: node.scrollHeight
 			},
 			a0: {
-				ab: node.scrollLeft,
-				ac: node.scrollTop,
+				ac: node.scrollLeft,
+				ad: node.scrollTop,
 				K: node.clientWidth,
 				E: node.clientHeight
 			}
@@ -4441,14 +4441,14 @@ function _Browser_getElement(id)
 		return {
 			aV: _Browser_getScene(),
 			a0: {
-				ab: x,
-				ac: y,
+				ac: x,
+				ad: y,
 				K: _Browser_doc.documentElement.clientWidth,
 				E: _Browser_doc.documentElement.clientHeight
 			},
 			a8: {
-				ab: x + rect.left,
-				ac: y + rect.top,
+				ac: x + rect.left,
+				ad: y + rect.top,
 				K: rect.width,
 				E: rect.height
 			}
@@ -4671,13 +4671,13 @@ var elm$core$Set$toList = function (_n0) {
 };
 var author$project$Presentation$createModel = F3(
 	function (base, navigationKey, presentation) {
-		return {ad: base, ai: navigationKey, q: presentation, Y: _List_Nil, _: author$project$Presentation$Idle};
+		return {ae: base, N: navigationKey, q: presentation, Z: _List_Nil, aa: author$project$Presentation$Idle};
 	});
 var author$project$Presentation$updateStatus = F2(
 	function (status, model) {
 		return _Utils_update(
 			model,
-			{_: status});
+			{aa: status});
 	});
 var author$project$Presentation$Kernel$Blank = {$: 0};
 var author$project$Presentation$Kernel$Presentation = elm$core$Basics$identity;
@@ -5926,7 +5926,7 @@ var elm$http$Http$cmdMap = F2(
 					bm: r.bm,
 					bK: r.bK,
 					bM: r.bM,
-					aa: r.aa
+					ab: r.ab
 				});
 		}
 	});
@@ -5949,7 +5949,7 @@ var elm$http$Http$subscription = _Platform_leaf('Http');
 var elm$http$Http$request = function (r) {
 	return elm$http$Http$command(
 		elm$http$Http$Request(
-			{C: false, at: r.at, ba: r.ba, bi: r.bi, bm: r.bm, bK: r.bK, bM: r.bM, aa: r.aa}));
+			{C: false, at: r.at, ba: r.ba, bi: r.bi, bm: r.bm, bK: r.bK, bM: r.bM, ab: r.ab}));
 };
 var author$project$Presentation$init = F3(
 	function (flags, origin, key) {
@@ -5964,7 +5964,7 @@ var author$project$Presentation$init = F3(
 				bm: 'GET',
 				bK: elm$core$Maybe$Nothing,
 				bM: elm$core$Maybe$Nothing,
-				aa: flags.aa
+				ab: flags.ab
 			});
 		var base = _Utils_update(
 			origin,
@@ -6838,6 +6838,10 @@ var author$project$Presentation$Kernel$backtrack = function (original) {
 		return original;
 	}
 };
+var author$project$Presentation$Kernel$currentIndex = function (_n0) {
+	var preceding = _n0.p;
+	return 1 + elm$core$List$length(preceding);
+};
 var author$project$Presentation$Kernel$Stream = function (a) {
 	return {$: 2, a: a};
 };
@@ -6864,8 +6868,8 @@ var dvberkel$microkanren$MicroKanren$update = F2(
 			return _Utils_update(
 				model,
 				{
-					P: _Utils_ap(
-						model.P,
+					Q: _Utils_ap(
+						model.Q,
 						_List_fromArray(
 							[state])),
 					I: followingStream
@@ -6941,8 +6945,8 @@ var dvberkel$microkanren$MicroKanren$Kernel$emptyState = {bh: 0, bH: elm$core$Di
 var dvberkel$microkanren$MicroKanren$streamModelFromGoal = F2(
 	function (name, goal) {
 		return {
-			ah: name,
-			P: _List_Nil,
+			ai: name,
+			Q: _List_Nil,
 			I: goal(dvberkel$microkanren$MicroKanren$Kernel$emptyState)
 		};
 	});
@@ -7029,6 +7033,7 @@ var author$project$Presentation$Parser$parse = F2(
 			toPresentation,
 			A2(author$project$Presentation$Parser$parseSlides, goals, input));
 	});
+var elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (!maybe.$) {
@@ -7041,6 +7046,47 @@ var elm$core$Maybe$map = F2(
 	});
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
+var elm$url$Url$Builder$Relative = {$: 1};
+var elm$url$Url$Builder$rootToPrePath = function (root) {
+	switch (root.$) {
+		case 0:
+			return '/';
+		case 1:
+			return '';
+		default:
+			var prePath = root.a;
+			return prePath + '/';
+	}
+};
+var elm$url$Url$Builder$toQueryPair = function (_n0) {
+	var key = _n0.a;
+	var value = _n0.b;
+	return key + ('=' + value);
+};
+var elm$url$Url$Builder$toQuery = function (parameters) {
+	if (!parameters.b) {
+		return '';
+	} else {
+		return '?' + A2(
+			elm$core$String$join,
+			'&',
+			A2(elm$core$List$map, elm$url$Url$Builder$toQueryPair, parameters));
+	}
+};
+var elm$url$Url$Builder$custom = F4(
+	function (root, pathSegments, parameters, maybeFragment) {
+		var fragmentless = _Utils_ap(
+			elm$url$Url$Builder$rootToPrePath(root),
+			_Utils_ap(
+				A2(elm$core$String$join, '/', pathSegments),
+				elm$url$Url$Builder$toQuery(parameters)));
+		if (maybeFragment.$ === 1) {
+			return fragmentless;
+		} else {
+			var fragment = maybeFragment.a;
+			return fragmentless + ('#' + fragment);
+		}
+	});
 var ohanhi$keyboard$Keyboard$Backspace = {$: 26};
 var ohanhi$keyboard$Keyboard$Clear = {$: 27};
 var ohanhi$keyboard$Keyboard$Copy = {$: 28};
@@ -7513,7 +7559,7 @@ var author$project$Presentation$update = F2(
 					var nextModel = A2(
 						author$project$Presentation$updateStatus,
 						author$project$Presentation$Idle,
-						A3(author$project$Presentation$createModel, model.ad, model.ai, presentation));
+						A3(author$project$Presentation$createModel, model.ae, model.N, presentation));
 					return _Utils_Tuple2(nextModel, elm$core$Platform$Cmd$none);
 				} else {
 					var error = _n2.a;
@@ -7525,10 +7571,10 @@ var author$project$Presentation$update = F2(
 				}
 			case 0:
 				var keyMessage = message.a;
-				var pressedKeys = A2(ohanhi$keyboard$Keyboard$update, keyMessage, model.Y);
+				var pressedKeys = A2(ohanhi$keyboard$Keyboard$update, keyMessage, model.Z);
 				var nextModel = _Utils_update(
 					model,
-					{Y: pressedKeys});
+					{Z: pressedKeys});
 				var nextCommand = A2(
 					elm$core$Maybe$withDefault,
 					elm$core$Platform$Cmd$none,
@@ -7538,23 +7584,49 @@ var author$project$Presentation$update = F2(
 						author$project$Presentation$toCommand(pressedKeys)));
 				return _Utils_Tuple2(nextModel, nextCommand);
 			case 1:
+				var presentation = author$project$Presentation$Kernel$advance(model.q);
 				var nextModel = _Utils_update(
 					model,
-					{
-						q: author$project$Presentation$Kernel$advance(model.q)
-					});
+					{q: presentation});
+				var index = elm$core$String$fromInt(
+					author$project$Presentation$Kernel$currentIndex(presentation));
+				var url = A4(
+					elm$url$Url$Builder$custom,
+					elm$url$Url$Builder$Relative,
+					_List_Nil,
+					_List_Nil,
+					elm$core$Maybe$Just(index));
+				var navigationCommand = A2(elm$browser$Browser$Navigation$pushUrl, model.N, url);
 				return _Utils_Tuple2(
 					nextModel,
-					author$project$Presentation$slideChanged(0));
+					elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								author$project$Presentation$slideChanged(0),
+								navigationCommand
+							])));
 			case 2:
+				var presentation = author$project$Presentation$Kernel$backtrack(model.q);
 				var nextModel = _Utils_update(
 					model,
-					{
-						q: author$project$Presentation$Kernel$backtrack(model.q)
-					});
+					{q: presentation});
+				var index = elm$core$String$fromInt(
+					author$project$Presentation$Kernel$currentIndex(presentation));
+				var url = A4(
+					elm$url$Url$Builder$custom,
+					elm$url$Url$Builder$Relative,
+					_List_Nil,
+					_List_Nil,
+					elm$core$Maybe$Just(index));
+				var navigationCommand = A2(elm$browser$Browser$Navigation$pushUrl, model.N, url);
 				return _Utils_Tuple2(
 					nextModel,
-					author$project$Presentation$slideChanged(0));
+					elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								author$project$Presentation$slideChanged(0),
+								navigationCommand
+							])));
 			case 3:
 				var nextModel = _Utils_update(
 					model,
@@ -7644,10 +7716,6 @@ var author$project$Presentation$viewStatus = function (status) {
 				]),
 			_List_Nil);
 	}
-};
-var author$project$Presentation$Kernel$currentIndex = function (_n0) {
-	var preceding = _n0.p;
-	return 1 + elm$core$List$length(preceding);
 };
 var author$project$Presentation$Kernel$slideCount = function (_n0) {
 	var preceding = _n0.p;
@@ -7907,7 +7975,7 @@ var dvberkel$microkanren$MicroKanren$view = F2(
 							_List_Nil,
 							_List_fromArray(
 								[
-									elm$html$Html$text(model.ah)
+									elm$html$Html$text(model.ai)
 								]))
 						])),
 					A2(
@@ -7924,7 +7992,7 @@ var dvberkel$microkanren$MicroKanren$view = F2(
 					A2(
 						elm$core$List$map,
 						dvberkel$microkanren$MicroKanren$viewState(stringify),
-						model.P)),
+						model.Q)),
 					dvberkel$microkanren$MicroKanren$viewStream(model.I)
 				]));
 	});
@@ -8015,7 +8083,7 @@ var author$project$Presentation$view = function (model) {
 						},
 						model.q),
 						author$project$Presentation$Kernel$viewInfo(model.q),
-						author$project$Presentation$viewStatus(model._)
+						author$project$Presentation$viewStatus(model.aa)
 					]))
 			]),
 		bL: 'μKanren'
@@ -8030,6 +8098,6 @@ _Platform_export({'Presentation':{'init':author$project$Presentation$main(
 		elm$json$Json$Decode$andThen,
 		function (url) {
 			return elm$json$Json$Decode$succeed(
-				{aa: url});
+				{ab: url});
 		},
 		A2(elm$json$Json$Decode$field, 'url', elm$json$Json$Decode$string)))(0)}});}(this));
