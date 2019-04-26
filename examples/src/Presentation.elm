@@ -1,6 +1,7 @@
 port module Presentation exposing (main)
 
-import Browser
+import Browser exposing (Document, UrlRequest)
+import Browser.Navigation as Navigation
 import Html exposing (Html)
 import Html.Attributes as Attribute
 import Http
@@ -12,15 +13,18 @@ import Presentation.Goals exposing (goals)
 import Presentation.Kernel exposing (..)
 import Presentation.Parser as Parser exposing (Error(..))
 import Task exposing (Task)
+import Url exposing (Url)
 
 
 main : Program Flags Model Message
 main =
-    Browser.element
+    Browser.application
         { init = init
         , update = update
         , view = view
         , subscriptions = subscriptions
+        , onUrlChange = onUrlChange
+        , onUrlRequest = onUrlRequest
         }
 
 
@@ -33,8 +37,8 @@ type alias Flags =
 {- MODEL -}
 
 
-init : Flags -> ( Model, Cmd Message )
-init flags =
+init : Flags -> Url -> Navigation.Key -> ( Model, Cmd Message )
+init flags _ _ =
     let
         model =
             emptyPresentation
@@ -84,13 +88,17 @@ updateStatus status model =
 {- VIEW -}
 
 
-view : Model -> Html Message
+view : Model -> Document Message
 view model =
-    Html.div [ Attribute.class "presentation" ]
-        [ viewPresentation (\_ -> TakeFromStream) model.presentation
-        , viewInfo model.presentation
-        , viewStatus model.status
+    { title = "μKanren"
+    , body =
+        [ Html.div [ Attribute.class "presentation" ]
+            [ viewPresentation (\_ -> TakeFromStream) model.presentation
+            , viewInfo model.presentation
+            , viewStatus model.status
+            ]
         ]
+    }
 
 
 viewStatus : Status -> Html msg
@@ -137,6 +145,7 @@ type Message
     | TakeFromStream
     | Got (Result Http.Error String)
     | Parse String
+    | DoNothing
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -211,7 +220,7 @@ update message model =
                 nextModel =
                     { model | presentation = backtrack model.presentation }
             in
-            ( nextModel, slideChanged ())
+            ( nextModel, slideChanged () )
 
         TakeFromStream ->
             let
@@ -219,6 +228,9 @@ update message model =
                     { model | presentation = takeFromStream model.presentation }
             in
             ( nextModel, Cmd.none )
+
+        DoNothing ->
+            ( model, Cmd.none )
 
 
 toCommand : List Key -> Maybe (Task Never Message)
@@ -235,6 +247,16 @@ toCommand keys =
 
         _ :: tail ->
             toCommand tail
+
+
+onUrlChange : Url -> Message
+onUrlChange _ =
+    DoNothing
+
+
+onUrlRequest : UrlRequest -> Message
+onUrlRequest _ =
+    DoNothing
 
 
 
