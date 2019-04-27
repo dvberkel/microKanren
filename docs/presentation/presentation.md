@@ -148,3 +148,150 @@ goal: identical_5
 
 ---
 goal: nat
+
+---
+
+## Walk
+
+```elm
+walk : Term a -> Substitution a -> Term a
+walk term substitution =
+    case term of
+        Variable variable ->
+            case Dict.get variable substitution of
+                Just value ->
+                    walk value substitution
+
+                Nothing ->
+                    term
+
+        _ ->
+            term
+```
+
+---
+
+## Identical
+
+```elm
+identical : Term a -> Term a -> Goal a
+identical left right =
+    \state ->
+        case unify left right state.substitution of
+            Just substitution ->
+                unit
+                    { state
+                        | substitution = substitution
+                    }
+
+            Nothing ->
+                mzero
+
+```
+
+---
+
+## Identical
+
+```elm
+identical : Term a -> Term a -> Goal a
+identical left right =
+    \state ->
+        case unify left right state.substitution of
+            Just substitution ->
+                unit
+                    { state
+                        | substitution = substitution
+                    }
+
+            Nothing ->
+                mzero
+
+```
+
+```elm
+unit : Goal a
+unit state =
+    Mature state Empty
+
+
+mzero : Stream a
+mzero =
+    Empty
+```
+
+---
+
+## Unify
+
+```elm
+unify : Term a -> Term a -> Substitution a -> Maybe (Substitution a)
+unify left right substitution =
+    let
+        leftWalk =
+            walk left substitution
+
+        rightWalk =
+            walk right substitution
+    in
+    case ( leftWalk, rightWalk ) of
+        -- other cases discussed in next slides
+        
+        _ ->
+            Nothing
+```
+
+---
+
+## Unify -- both variables
+
+```elm
+        ( Variable leftVariable, Variable rightVariable ) ->
+            if leftVariable == rightVariable then
+                Just substitution
+
+            else
+                Nothing
+
+```
+
+---
+
+## Unify -- both values
+
+```elm
+        ( Value leftValue, Value rightValue ) ->
+            if leftValue == rightValue then
+                Just substitution
+
+            else
+                Nothing
+
+```
+
+---
+
+## Unify -- one variable
+
+```elm
+        ( Variable leftVariable, _ ) ->
+            Just (extend leftVariable rightWalk substitution)
+
+        ( _, Variable rightVariable ) ->
+            Just (extend rightVariable leftWalk substitution)
+
+```
+---
+
+## Unify -- both pairs 
+
+```elm
+        ( Pair ( leftFirst, leftSecond ), Pair ( rightFirst, rightSecond ) ) ->
+            case unify leftFirst rightFirst substitution of
+                Just nextSubstitution ->
+                    unify leftSecond rightSecond nextSubstitution
+
+                Nothing ->
+                    Nothing
+
+```
