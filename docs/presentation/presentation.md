@@ -151,7 +151,7 @@ goal: nat
 
 ---
 
-## Walk
+## `walk`
 
 ```elm
 walk : Term a -> Substitution a -> Term a
@@ -171,7 +171,7 @@ walk term substitution =
 
 ---
 
-## Identical
+## `identical`
 
 ```elm
 identical : Term a -> Term a -> Goal a
@@ -191,7 +191,7 @@ identical left right =
 
 ---
 
-## Identical
+## `identical`
 
 ```elm
 identical : Term a -> Term a -> Goal a
@@ -222,7 +222,7 @@ mzero =
 
 ---
 
-## Unify
+## `unify`
 
 ```elm
 unify : Term a -> Term a -> Substitution a -> Maybe (Substitution a)
@@ -243,7 +243,7 @@ unify left right substitution =
 
 ---
 
-## Unify -- both variables
+## `unify` -- both variables
 
 ```elm
         ( Variable leftVariable, Variable rightVariable ) ->
@@ -257,7 +257,7 @@ unify left right substitution =
 
 ---
 
-## Unify -- both values
+## `unify` -- both values
 
 ```elm
         ( Value leftValue, Value rightValue ) ->
@@ -271,7 +271,7 @@ unify left right substitution =
 
 ---
 
-## Unify -- one variable
+## `unify` -- one variable
 
 ```elm
         ( Variable leftVariable, _ ) ->
@@ -283,7 +283,7 @@ unify left right substitution =
 ```
 ---
 
-## Unify -- both pairs 
+## `unify` -- both pairs 
 
 ```elm
         ( Pair ( leftFirst, leftSecond ), Pair ( rightFirst, rightSecond ) ) ->
@@ -295,3 +295,122 @@ unify left right substitution =
                     Nothing
 
 ```
+
+---
+
+## `callfresh`
+
+```elm
+callFresh : (Term a -> Goal a) -> Goal a
+callFresh f =
+    \state -> f (Variable state.fresh) { state | fresh = state.fresh + 1 }
+```
+
+---
+
+## `disj`
+
+```elm
+disjoin : Goal a -> Goal a -> Goal a
+disjoin left right =
+    \state ->
+        mplus (left state) (right state)
+```
+
+---
+
+## `conj`
+
+```elm
+conjoin : Goal a -> Goal a -> Goal a
+conjoin left right =
+    \state ->
+        bind (left state) right
+```
+
+---
+
+## `mplus`
+
+---
+
+## `mplus`
+
+### depth-first
+
+```elm
+mplus : Stream a -> Stream a -> Stream a
+mplus left right =
+    case left of
+        Empty ->
+            right
+
+        Immature lazyStream ->
+            Immature (\_ -> mplus (lazyStream ()) right)
+
+        Mature state followingStream ->
+            Mature state (mplus followingStream right)
+```
+
+---
+
+## `mplus`
+
+### depth-first
+
+```elm
+mplus : Stream a -> Stream a -> Stream a
+mplus left right =
+    case left of
+        Empty ->
+            right
+
+        Immature lazyStream ->
+            Immature (\_ -> mplus (lazyStream ()) right)
+
+        Mature state followingStream ->
+            Mature state (mplus followingStream right)
+```
+
+### bread-first
+
+```elm
+mplus : Stream a -> Stream a -> Stream a
+mplus left right =
+    case left of
+        Empty ->
+            right
+
+        Immature lazyStream ->
+            Immature (\_ -> mplus right (lazyStream ()))
+
+        Mature state followingStream ->
+            Mature state (mplus right followingStream)
+```
+
+---
+
+## `bind`
+
+---
+
+## `bind`
+
+```elm
+bind : Stream a -> Goal a -> Stream a
+bind stream goal =
+    case stream of
+        Empty ->
+            mzero
+
+        Immature lazyStream ->
+            Immature (\_ -> bind (lazyStream ()) goal)
+
+        Mature state followingStream ->
+            let
+                goalStream =
+                    goal state
+            in
+            mplus goalStream (bind followingStream goal)
+```
+
