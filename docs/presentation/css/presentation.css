@@ -1,10 +1,12 @@
 .content.first h1 {
     font-size: 700%;
-    text-align: center;
 }
 
 .content.first h2 {
     font-size: 200%;
+}
+
+.content.first h1, .content.first h2, .content.first p {
     text-align: center;
 }
 

@@ -1,6 +1,8 @@
 # μKanren
 ## A Minimal Functional Core for Relational Programming
 
+[paper](http://webyrd.net/scheme-2013/papers/HemannMuKanren2013.pdf)
+
 ---
 
 ## μKanren
@@ -78,6 +80,9 @@ type alias State a =
 ```
 
 ```elm
+type alias Substitution a =
+    Dict.Dict Var (Term a)
+
 type alias Var =
     Int
 
@@ -85,9 +90,6 @@ type Term a
     = Variable Var
     | Value a
     | Pair ( Term a, Term a )
-
-type alias Substitution a =
-    Dict.Dict Var (Term a)
 ```
 
 ---
