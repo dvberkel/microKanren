@@ -32,7 +32,7 @@
     content: "”";
 }
 
-.content p, .content code, .stream {
+.content p, .content code, .content ul, .stream {
     font-size: 150%;
 }
 
@@ -51,7 +51,7 @@
 .stream .seen.states {
     display: flex;
     flex-direction: row;
-    flex-wrap : nowrap;
+    flex-wrap : wrap;
     justify-content: center;
     align-items: center;
 }
