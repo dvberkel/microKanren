@@ -202,12 +202,9 @@ unify left right substitution =
             Just (extend rightVariable leftWalk substitution)
 
         ( Pair ( leftFirst, leftSecond ), Pair ( rightFirst, rightSecond ) ) ->
-            case unify leftFirst rightFirst substitution of
-                Just nextSubstitution ->
-                    unify leftSecond rightSecond nextSubstitution
-
-                Nothing ->
-                    Nothing
+            substitution
+                |> unify leftFirst rightFirst
+                |> Maybe.andThen (unify leftSecond rightSecond)
 
         _ ->
             Nothing
