@@ -190,7 +190,7 @@ update message model =
                             createModel model.base model.navigationKey aPresentation
                                 |> updateStatus Idle
                     in
-                    ( nextModel, Cmd.none )
+                    ( nextModel, slideChanged ())
 
                 Err error ->
                     let

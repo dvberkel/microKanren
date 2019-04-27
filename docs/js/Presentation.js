@@ -7604,7 +7604,9 @@ var author$project$Presentation$update = F2(
 						author$project$Presentation$updateStatus,
 						author$project$Presentation$Idle,
 						A3(author$project$Presentation$createModel, model.W, model.N, aPresentation));
-					return _Utils_Tuple2(nextModel, elm$core$Platform$Cmd$none);
+					return _Utils_Tuple2(
+						nextModel,
+						author$project$Presentation$slideChanged(0));
 				} else {
 					var error = _n2.a;
 					var nextModel = A2(
