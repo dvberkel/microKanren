@@ -151,6 +151,10 @@ goal: nat
 
 ---
 
+## Implementation
+
+---
+
 ## `walk`
 
 ```elm
