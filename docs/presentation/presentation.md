@@ -472,3 +472,131 @@ conjoin
 ---
 goal: a_and_b
 
+---
+
+## `nat`
+
+---
+
+## `nat`
+
+```elm
+nat: Goal Int
+nat =
+    natFrom 0
+```
+
+---
+
+## `nat`
+
+```elm
+nat: Term Int -> Goal Int
+nat =
+    natFrom 0
+```
+
+```elm
+natFrom : Int -> Term Int -> Goal Int
+natFrom n =
+    \term ->
+        disjoin 
+            (identical term (Value n))
+            (natFrom (n+1) term)
+```
+
+---
+
+## `nat`
+
+```elm
+nat: Term Int -> Goal Int
+nat =
+    natFrom 0
+```
+
+```elm
+natFrom : Int -> Term Int -> Goal Int
+natFrom n =
+    \term ->
+        disjoin 
+            (identical term (Value n))
+            (\state -> natFrom (n+1) term state)
+```
+
+---
+
+## `nat`
+
+```elm
+nat: Term Int -> Goal Int
+nat =
+    natFrom 0
+```
+
+```elm
+natFrom : Int -> Term Int -> Goal Int
+natFrom n =
+    \term ->
+        disjoin 
+            (identical term (Value n))
+            (\state -> Immature <| \_ -> natFrom (n+1) term state)
+```
+
+---
+goal: nat
+
+---
+
+```elm
+natFrom (n+1) term
+```
+
+```elm
+\state -> Immature <| \_ -> natFrom (n+1) term state
+```
+
+---
+
+```elm
+natFrom (n+1) term
+```
+
+```elm
+\state -> Immature <| \_ -> natFrom (n+1) term state
+```
+
+### `zzz`
+
+```elm
+zzz : (() -> Goal a) -> Goal a
+zzz goal =
+    \state -> Kernel.Immature <| \_ -> goal () state
+```
+
+---
+
+```elm
+natFrom (n+1) term
+```
+
+```elm
+\state -> Immature <| \_ -> natFrom (n+1) term state
+```
+
+### `zzz`
+
+```elm
+zzz : (() -> Goal a) -> Goal a
+zzz goal =
+    \state -> Kernel.Immature <| \_ -> goal () state
+```
+
+```elm
+natFrom : Int -> Term Int -> Goal Int
+natFrom start =
+    \term ->
+        disjoin
+            (identical term (Value start))
+            (zzz (\_ -> natFrom (start + 1) term))
+```
