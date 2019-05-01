@@ -147,6 +147,12 @@ callFresh (\term -> identical term (Value 5))
 goal: identical_5
 
 ---
+
+```elm
+callFresh nat
+```
+
+---
 goal: nat
 
 ---
@@ -417,4 +423,52 @@ bind stream goal =
             in
             mplus goalStream (bind followingStream goal)
 ```
+
+---
+
+## Finished!
+
+---
+
+## Demo
+
+---
+
+```elm
+callFresh (\term -> identical term (Value 5))
+```
+
+---
+goal: identical_5
+
+---
+
+```elm
+callFresh
+    (\b ->
+        disjoin
+            (identical b (Value 5))
+            (identical b (Value 6))
+    )
+```
+
+---
+goal: 5_or_6
+
+---
+
+```elm
+conjoin
+    (callFresh (\a -> identical a (Value 7)))
+    (callFresh
+        (\b ->
+            disjoin
+                (identical b (Value 5))
+                (identical b (Value 6))
+        )
+    )
+```
+
+---
+goal: a_and_b
 

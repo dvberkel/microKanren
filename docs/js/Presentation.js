@@ -6571,8 +6571,80 @@ var dvberkel$microkanren$MicroKanren$Kernel$callFresh = function (f) {
 				{bi: state.bi + 1}));
 	};
 };
+var dvberkel$microkanren$MicroKanren$Kernel$Immature = function (a) {
+	return {$: 1, a: a};
+};
+var dvberkel$microkanren$MicroKanren$Kernel$Mature = F2(
+	function (a, b) {
+		return {$: 2, a: a, b: b};
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$mplus = F2(
+	function (left, right) {
+		switch (left.$) {
+			case 0:
+				return right;
+			case 1:
+				var lazyStream = left.a;
+				return dvberkel$microkanren$MicroKanren$Kernel$Immature(
+					function (_n1) {
+						return A2(
+							dvberkel$microkanren$MicroKanren$Kernel$mplus,
+							right,
+							lazyStream(0));
+					});
+			default:
+				var state = left.a;
+				var followingStream = left.b;
+				return A2(
+					dvberkel$microkanren$MicroKanren$Kernel$Mature,
+					state,
+					A2(dvberkel$microkanren$MicroKanren$Kernel$mplus, right, followingStream));
+		}
+	});
 var dvberkel$microkanren$MicroKanren$Kernel$Empty = {$: 0};
 var dvberkel$microkanren$MicroKanren$Kernel$mzero = dvberkel$microkanren$MicroKanren$Kernel$Empty;
+var dvberkel$microkanren$MicroKanren$Kernel$bind = F2(
+	function (stream, goal) {
+		switch (stream.$) {
+			case 0:
+				return dvberkel$microkanren$MicroKanren$Kernel$mzero;
+			case 1:
+				var lazyStream = stream.a;
+				return dvberkel$microkanren$MicroKanren$Kernel$Immature(
+					function (_n1) {
+						return A2(
+							dvberkel$microkanren$MicroKanren$Kernel$bind,
+							lazyStream(0),
+							goal);
+					});
+			default:
+				var state = stream.a;
+				var followingStream = stream.b;
+				var goalStream = goal(state);
+				return A2(
+					dvberkel$microkanren$MicroKanren$Kernel$mplus,
+					goalStream,
+					A2(dvberkel$microkanren$MicroKanren$Kernel$bind, followingStream, goal));
+		}
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$conjoin = F2(
+	function (left, right) {
+		return function (state) {
+			return A2(
+				dvberkel$microkanren$MicroKanren$Kernel$bind,
+				left(state),
+				right);
+		};
+	});
+var dvberkel$microkanren$MicroKanren$Kernel$disjoin = F2(
+	function (left, right) {
+		return function (state) {
+			return A2(
+				dvberkel$microkanren$MicroKanren$Kernel$mplus,
+				left(state),
+				right(state));
+		};
+	});
 var dvberkel$microkanren$MicroKanren$Kernel$extend = F3(
 	function (variable, term, substitution) {
 		return A3(elm$core$Dict$insert, variable, term, substitution);
@@ -6668,10 +6740,6 @@ var dvberkel$microkanren$MicroKanren$Kernel$unify = F3(
 				A3(dvberkel$microkanren$MicroKanren$Kernel$extend, rightVariable, leftWalk, substitution));
 		}
 	});
-var dvberkel$microkanren$MicroKanren$Kernel$Mature = F2(
-	function (a, b) {
-		return {$: 2, a: a, b: b};
-	});
 var dvberkel$microkanren$MicroKanren$Kernel$unit = function (state) {
 	return A2(dvberkel$microkanren$MicroKanren$Kernel$Mature, state, dvberkel$microkanren$MicroKanren$Kernel$Empty);
 };
@@ -6688,41 +6756,6 @@ var dvberkel$microkanren$MicroKanren$Kernel$identical = F2(
 			} else {
 				return dvberkel$microkanren$MicroKanren$Kernel$mzero;
 			}
-		};
-	});
-var dvberkel$microkanren$MicroKanren$Kernel$Immature = function (a) {
-	return {$: 1, a: a};
-};
-var dvberkel$microkanren$MicroKanren$Kernel$mplus = F2(
-	function (left, right) {
-		switch (left.$) {
-			case 0:
-				return right;
-			case 1:
-				var lazyStream = left.a;
-				return dvberkel$microkanren$MicroKanren$Kernel$Immature(
-					function (_n1) {
-						return A2(
-							dvberkel$microkanren$MicroKanren$Kernel$mplus,
-							right,
-							lazyStream(0));
-					});
-			default:
-				var state = left.a;
-				var followingStream = left.b;
-				return A2(
-					dvberkel$microkanren$MicroKanren$Kernel$Mature,
-					state,
-					A2(dvberkel$microkanren$MicroKanren$Kernel$mplus, right, followingStream));
-		}
-	});
-var dvberkel$microkanren$MicroKanren$Kernel$disjoin = F2(
-	function (left, right) {
-		return function (state) {
-			return A2(
-				dvberkel$microkanren$MicroKanren$Kernel$mplus,
-				left(state),
-				right(state));
 		};
 	});
 var dvberkel$microkanren$MicroKanren$UserLevel$zzz = function (goal) {
@@ -6750,26 +6783,71 @@ var dvberkel$microkanren$MicroKanren$Util$natFrom = function (start) {
 var dvberkel$microkanren$MicroKanren$Util$nat = dvberkel$microkanren$MicroKanren$Util$natFrom(0);
 var author$project$Presentation$Goals$goals = A3(
 	elm$core$Dict$insert,
-	'nat',
+	'a_and_b',
 	_Utils_Tuple2(
-		'nat t',
-		dvberkel$microkanren$MicroKanren$Kernel$callFresh(
-			function (term) {
-				return dvberkel$microkanren$MicroKanren$Util$nat(term);
-			})),
+		'a A b',
+		A2(
+			dvberkel$microkanren$MicroKanren$Kernel$conjoin,
+			dvberkel$microkanren$MicroKanren$Kernel$callFresh(
+				function (a) {
+					return A2(
+						dvberkel$microkanren$MicroKanren$Kernel$identical,
+						a,
+						dvberkel$microkanren$MicroKanren$Kernel$Value(7));
+				}),
+			dvberkel$microkanren$MicroKanren$Kernel$callFresh(
+				function (b) {
+					return A2(
+						dvberkel$microkanren$MicroKanren$Kernel$disjoin,
+						A2(
+							dvberkel$microkanren$MicroKanren$Kernel$identical,
+							b,
+							dvberkel$microkanren$MicroKanren$Kernel$Value(5)),
+						A2(
+							dvberkel$microkanren$MicroKanren$Kernel$identical,
+							b,
+							dvberkel$microkanren$MicroKanren$Kernel$Value(6)));
+				}))),
 	A3(
 		elm$core$Dict$insert,
-		'identical_5',
+		'5_or_6',
 		_Utils_Tuple2(
-			'≡ t 5',
+			'5 v 6',
 			dvberkel$microkanren$MicroKanren$Kernel$callFresh(
 				function (term) {
 					return A2(
-						dvberkel$microkanren$MicroKanren$Kernel$identical,
-						term,
-						dvberkel$microkanren$MicroKanren$Kernel$Value(5));
+						dvberkel$microkanren$MicroKanren$Kernel$disjoin,
+						A2(
+							dvberkel$microkanren$MicroKanren$Kernel$identical,
+							term,
+							dvberkel$microkanren$MicroKanren$Kernel$Value(5)),
+						A2(
+							dvberkel$microkanren$MicroKanren$Kernel$identical,
+							term,
+							dvberkel$microkanren$MicroKanren$Kernel$Value(6)));
 				})),
-		elm$core$Dict$empty));
+		A3(
+			elm$core$Dict$insert,
+			'nat',
+			_Utils_Tuple2(
+				'nat t',
+				dvberkel$microkanren$MicroKanren$Kernel$callFresh(
+					function (term) {
+						return dvberkel$microkanren$MicroKanren$Util$nat(term);
+					})),
+			A3(
+				elm$core$Dict$insert,
+				'identical_5',
+				_Utils_Tuple2(
+					'≡ t 5',
+					dvberkel$microkanren$MicroKanren$Kernel$callFresh(
+						function (term) {
+							return A2(
+								dvberkel$microkanren$MicroKanren$Kernel$identical,
+								term,
+								dvberkel$microkanren$MicroKanren$Kernel$Value(5));
+						})),
+				elm$core$Dict$empty))));
 var elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
