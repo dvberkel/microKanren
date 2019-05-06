@@ -181,16 +181,15 @@ update message model =
                     let
                         aPresentation =
                             model.base.fragment
-                            |> Maybe.andThen String.toInt
-                            |> Maybe.map (\targetIndex -> jump targetIndex presentation)
-                            |> Maybe.withDefault presentation
-
+                                |> Maybe.andThen String.toInt
+                                |> Maybe.map (\targetIndex -> jump targetIndex presentation)
+                                |> Maybe.withDefault presentation
 
                         nextModel =
                             createModel model.base model.navigationKey aPresentation
                                 |> updateStatus Idle
                     in
-                    ( nextModel, slideChanged ())
+                    ( nextModel, slideChanged () )
 
                 Err error ->
                     let

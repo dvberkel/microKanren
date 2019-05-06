@@ -1,4 +1,4 @@
-module Presentation.Parser exposing (Error(..), parse)
+module Presentation.Parser exposing (Error(..), parse, accumulate)
 
 import Dict exposing (Dict)
 import MicroKanren exposing (streamModelFromGoal)
@@ -11,7 +11,7 @@ type Error
     | NoGoalKnown String
 
 
-parse : Dict String (String, Goal Int) -> String -> Result Error Presentation
+parse : Dict String ( String, Goal Int ) -> String -> Result Error Presentation
 parse goals input =
     let
         toPresentation =
@@ -23,30 +23,33 @@ parse goals input =
         |> Result.andThen toPresentation
 
 
-parseSlides : Dict String (String, Goal Int) -> String -> Result Error (List Slide)
+parseSlides : Dict String ( String, Goal Int ) -> String -> Result Error (List Slide)
 parseSlides goals input =
     input
         |> String.split "---\n"
         |> parseMultipleSlides goals
 
 
-parseMultipleSlides : Dict String (String, Goal Int) -> List String -> Result Error (List Slide)
+parseMultipleSlides : Dict String ( String, Goal Int ) -> List String -> Result Error (List Slide)
 parseMultipleSlides goals inputs =
     inputs
-        |> List.map (parseSlide goals)
+        |> List.concatMap (parseSlide goals)
         |> gather
 
 
-parseSlide : Dict String (String, Goal Int) -> String -> Result Error Slide
+parseSlide : Dict String ( String, Goal Int ) -> String -> List (Result Error Slide)
 parseSlide goals input =
     if String.startsWith "goal: " input then
-        parseGoal goals <| String.dropLeft 6 input
+        input
+            |> String.dropLeft 6
+            |> parseGoal goals
+            |> List.singleton
 
     else
         parseMarkdown input
 
 
-parseGoal : Dict String (String, Goal Int) -> String -> Result Error Slide
+parseGoal : Dict String ( String, Goal Int ) -> String -> Result Error Slide
 parseGoal goals input =
     let
         maybeGoal =
@@ -67,9 +70,31 @@ parseGoal goals input =
             Err <| NoGoalKnown input
 
 
-parseMarkdown : String -> Result Error Slide
+parseMarkdown : String -> List (Result Error Slide)
 parseMarkdown input =
-    Ok <| Markdown input
+    input
+        |> String.split "--\n"
+        |> accumulate
+        |> List.map Markdown
+        |> List.map Ok
+
+
+accumulate : List String -> List String
+accumulate parts =
+    let
+        folder : String -> ( String, List String ) -> ( String, List String )
+        folder part ( acc, suffices ) =
+            let
+                next =
+                    acc ++ part
+            in
+            ( next, next :: suffices )
+    in
+    parts
+        |> List.foldl folder ("", [])
+        |> Tuple.second
+        |> List.reverse
+
 
 gather : List (Result e a) -> Result e (List a)
 gather =

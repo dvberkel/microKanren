@@ -7093,22 +7093,70 @@ var author$project$Presentation$Parser$parseGoal = F2(
 var author$project$Presentation$Kernel$Markdown = function (a) {
 	return {$: 1, a: a};
 };
+var elm$core$Tuple$second = function (_n0) {
+	var y = _n0.b;
+	return y;
+};
+var author$project$Presentation$Parser$accumulate = function (parts) {
+	var folder = F2(
+		function (part, _n0) {
+			var acc = _n0.a;
+			var suffices = _n0.b;
+			var next = _Utils_ap(acc, part);
+			return _Utils_Tuple2(
+				next,
+				A2(elm$core$List$cons, next, suffices));
+		});
+	return elm$core$List$reverse(
+		A3(
+			elm$core$List$foldl,
+			folder,
+			_Utils_Tuple2('', _List_Nil),
+			parts).b);
+};
 var author$project$Presentation$Parser$parseMarkdown = function (input) {
-	return elm$core$Result$Ok(
-		author$project$Presentation$Kernel$Markdown(input));
+	return A2(
+		elm$core$List$map,
+		elm$core$Result$Ok,
+		A2(
+			elm$core$List$map,
+			author$project$Presentation$Kernel$Markdown,
+			author$project$Presentation$Parser$accumulate(
+				A2(elm$core$String$split, '--\n', input))));
+};
+var elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
 };
 var author$project$Presentation$Parser$parseSlide = F2(
 	function (goals, input) {
-		return A2(elm$core$String$startsWith, 'goal: ', input) ? A2(
-			author$project$Presentation$Parser$parseGoal,
-			goals,
-			A2(elm$core$String$dropLeft, 6, input)) : author$project$Presentation$Parser$parseMarkdown(input);
+		return A2(elm$core$String$startsWith, 'goal: ', input) ? elm$core$List$singleton(
+			A2(
+				author$project$Presentation$Parser$parseGoal,
+				goals,
+				A2(elm$core$String$dropLeft, 6, input))) : author$project$Presentation$Parser$parseMarkdown(input);
+	});
+var elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
+		}
+	});
+var elm$core$List$concat = function (lists) {
+	return A3(elm$core$List$foldr, elm$core$List$append, _List_Nil, lists);
+};
+var elm$core$List$concatMap = F2(
+	function (f, list) {
+		return elm$core$List$concat(
+			A2(elm$core$List$map, f, list));
 	});
 var author$project$Presentation$Parser$parseMultipleSlides = F2(
 	function (goals, inputs) {
 		return author$project$Presentation$Parser$gather(
 			A2(
-				elm$core$List$map,
+				elm$core$List$concatMap,
 				author$project$Presentation$Parser$parseSlide(goals),
 				inputs));
 	});
@@ -7779,10 +7827,6 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
-var elm$core$Tuple$second = function (_n0) {
-	var y = _n0.b;
-	return y;
-};
 var elm$html$Html$Attributes$classList = function (classes) {
 	return elm$html$Html$Attributes$class(
 		A2(

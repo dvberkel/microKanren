@@ -556,15 +556,7 @@ natFrom (n+1) term
 \state -> Immature <| \_ -> natFrom (n+1) term state
 ```
 
----
-
-```elm
-natFrom (n+1) term
-```
-
-```elm
-\state -> Immature <| \_ -> natFrom (n+1) term state
-```
+--
 
 ### `zzz`
 
@@ -574,23 +566,7 @@ zzz goal =
     \state -> Kernel.Immature <| \_ -> goal () state
 ```
 
----
-
-```elm
-natFrom (n+1) term
-```
-
-```elm
-\state -> Immature <| \_ -> natFrom (n+1) term state
-```
-
-### `zzz`
-
-```elm
-zzz : (() -> Goal a) -> Goal a
-zzz goal =
-    \state -> Kernel.Immature <| \_ -> goal () state
-```
+--
 
 ```elm
 natFrom : Int -> Term Int -> Goal Int
