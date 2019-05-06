@@ -43,7 +43,7 @@ parseSlide goals input =
         parseGoal goals <| String.dropLeft 6 input
 
     else
-        Ok <| Markdown input
+        parseMarkdown input
 
 
 parseGoal : Dict String (String, Goal Int) -> String -> Result Error Slide
@@ -66,6 +66,10 @@ parseGoal goals input =
         Nothing ->
             Err <| NoGoalKnown input
 
+
+parseMarkdown : String -> Result Error Slide
+parseMarkdown input =
+    Ok <| Markdown input
 
 gather : List (Result e a) -> Result e (List a)
 gather =

@@ -7048,9 +7048,6 @@ var author$project$Presentation$Parser$accumulatedGather = F2(
 		}
 	});
 var author$project$Presentation$Parser$gather = author$project$Presentation$Parser$accumulatedGather(_List_Nil);
-var author$project$Presentation$Kernel$Markdown = function (a) {
-	return {$: 1, a: a};
-};
 var author$project$Presentation$Parser$NoGoalKnown = function (a) {
 	return {$: 1, a: a};
 };
@@ -7093,13 +7090,19 @@ var author$project$Presentation$Parser$parseGoal = F2(
 				author$project$Presentation$Parser$NoGoalKnown(input));
 		}
 	});
+var author$project$Presentation$Kernel$Markdown = function (a) {
+	return {$: 1, a: a};
+};
+var author$project$Presentation$Parser$parseMarkdown = function (input) {
+	return elm$core$Result$Ok(
+		author$project$Presentation$Kernel$Markdown(input));
+};
 var author$project$Presentation$Parser$parseSlide = F2(
 	function (goals, input) {
 		return A2(elm$core$String$startsWith, 'goal: ', input) ? A2(
 			author$project$Presentation$Parser$parseGoal,
 			goals,
-			A2(elm$core$String$dropLeft, 6, input)) : elm$core$Result$Ok(
-			author$project$Presentation$Kernel$Markdown(input));
+			A2(elm$core$String$dropLeft, 6, input)) : author$project$Presentation$Parser$parseMarkdown(input);
 	});
 var author$project$Presentation$Parser$parseMultipleSlides = F2(
 	function (goals, inputs) {
