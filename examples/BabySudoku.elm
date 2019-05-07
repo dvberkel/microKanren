@@ -1,20 +1,186 @@
 module BabySudoku exposing (main)
 
 import Browser
+import Html exposing (Html)
+import Html.Attributes as Attribute
+import Html.Events as Event
 import MicroKanren
 import MicroKanren.Kernel as Kernel exposing (..)
 
 
 main =
     Browser.sandbox
-        { init = init
-        , update = MicroKanren.update
-        , view = MicroKanren.view String.fromInt
+        { init = emptyModel
+        , update = update
+        , view = view
         }
 
 
-init : MicroKanren.StreamModel Int
-init =
+type alias Model =
+    { a : Hint
+    , b : Hint
+    , c : Hint
+    , d : Hint
+    , e : Hint
+    , f : Hint
+    , g : Hint
+    , h : Hint
+    , i : Hint
+    , j : Hint
+    , k : Hint
+    , l : Hint
+    , m : Hint
+    , n : Hint
+    , o : Hint
+    , p : Hint
+    }
+
+
+type alias Hint =
+    Maybe SudokuValue
+
+
+type SudokuValue
+    = One
+    | Two
+    | Three
+    | Four
+
+
+emptyModel : Model
+emptyModel =
+    { a = Just Four
+    , b = Nothing
+    , c = Nothing
+    , d = Nothing
+    , e = Nothing
+    , f = Nothing
+    , g = Nothing
+    , h = Nothing
+    , i = Nothing
+    , j = Nothing
+    , k = Nothing
+    , l = Nothing
+    , m = Nothing
+    , n = Nothing
+    , o = Nothing
+    , p = Nothing
+    }
+
+
+
+-- UPDATE
+
+
+type Message
+    = Set (Model -> Hint) String
+
+
+update : Message -> Model -> Model
+update message model =
+    case message of
+        Set attribute input ->
+            { model | a = stringToSudokuValue input }
+
+
+
+-- VIEW
+
+
+view : Model -> Html Message
+view model =
+    Html.div []
+        [ viewPuzzleInput model
+        , viewPuzzle model
+        ]
+
+
+viewPuzzleInput : Model -> Html Message
+viewPuzzleInput model =
+    Html.table []
+        [ Html.tr []
+            [ Html.td []
+                [ Html.select [ Event.onInput <| Set .a ]
+                    [ Html.option [ Attribute.value "unknown" ] [ Html.text "unknown" ]
+                    , Html.option [ Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
+                    , Html.option [ Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
+                    , Html.option [ Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
+                    , Html.option [ Attribute.value <| sudokuValueToString Four ] [ Html.text <| sudokuValueToString Four ]
+                    ]
+                ]
+            ]
+        ]
+
+
+sudokuValueToString : SudokuValue -> String
+sudokuValueToString value =
+    case value of
+        One ->
+            "1"
+
+        Two ->
+            "2"
+
+        Three ->
+            "3"
+
+        Four ->
+            "4"
+
+
+stringToSudokuValue : String -> Maybe SudokuValue
+stringToSudokuValue input =
+    case input of
+        "1" ->
+            Just One
+
+        "2" ->
+            Just Two
+
+        "3" ->
+            Just Three
+
+        "4" ->
+            Just Four
+
+        _ ->
+            Nothing
+
+
+sudokuValueToInt : SudokuValue -> Int
+sudokuValueToInt value =
+    case value of
+        One ->
+            1
+
+        Two ->
+            2
+
+        Three ->
+            3
+
+        Four ->
+            4
+
+
+viewPuzzle : Model -> Html Message
+viewPuzzle model =
+    Html.table []
+        [ Html.tr []
+            [ Html.td [] [ Html.text <| hintToString model.a ]
+            ]
+        ]
+
+
+hintToString : Hint -> String
+hintToString aHint =
+    aHint
+        |> Maybe.map sudokuValueToString
+        |> Maybe.withDefault ""
+
+
+streamModel : MicroKanren.StreamModel Int
+streamModel =
     let
         goal =
             callFresh
