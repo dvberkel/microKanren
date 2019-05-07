@@ -44,11 +44,7 @@ parent(daan, hannah).
 * Explain the article
 * using Elm
 
----
-
-## Plan
-* Explain the article
-* using Elm
+--
 
 ## Caveats
 * Elm is strongly-typed
@@ -57,9 +53,7 @@ parent(daan, hannah).
 
 ## State
 
----
-
-## State
+--
 
 ```elm
 type alias State a =
@@ -68,16 +62,7 @@ type alias State a =
     }
 ```
 
----
-
-## State
-
-```elm
-type alias State a =
-    { substitution : Substitution a
-    , fresh : Var
-    }
-```
+--
 
 ```elm
 type alias Substitution a =
@@ -96,9 +81,7 @@ type Term a
 
 ## Stream
 
----
-
-## Stream
+--
 
 ```elm
 type Stream a
@@ -107,16 +90,7 @@ type Stream a
     | Mature (State a) (Stream a)
 ```
 
----
-
-## Stream
-
-```elm
-type Stream a
-    = Empty
-    | Immature (() -> Stream a)
-    | Mature (State a) (Stream a)
-```
+--
 
 ```elm
 type List a
@@ -128,9 +102,7 @@ type List a
 
 ## Goal
 
----
-
-## Goal
+--
 
 ```elm
 type alias Goal a =
@@ -199,25 +171,7 @@ identical left right =
 
 ```
 
----
-
-## `identical`
-
-```elm
-identical : Term a -> Term a -> Goal a
-identical left right =
-    \state ->
-        case unify left right state.substitution of
-            Just substitution ->
-                unit
-                    { state
-                        | substitution = substitution
-                    }
-
-            Nothing ->
-                mzero
-
-```
+--
 
 ```elm
 unit : Goal a
@@ -342,9 +296,7 @@ conjoin left right =
 
 ## `mplus`
 
----
-
-## `mplus`
+--
 
 ### depth-first
 
@@ -362,25 +314,7 @@ mplus left right =
             Mature state (mplus followingStream right)
 ```
 
----
-
-## `mplus`
-
-### depth-first
-
-```elm
-mplus : Stream a -> Stream a -> Stream a
-mplus left right =
-    case left of
-        Empty ->
-            right
-
-        Immature lazyStream ->
-            Immature (\_ -> mplus (lazyStream ()) right)
-
-        Mature state followingStream ->
-            Mature state (mplus followingStream right)
-```
+--
 
 ### bread-first
 
@@ -402,9 +336,7 @@ mplus left right =
 
 ## `bind`
 
----
-
-## `bind`
+--
 
 ```elm
 bind : Stream a -> Goal a -> Stream a
@@ -476,9 +408,7 @@ goal: a_and_b
 
 ## `nat`
 
----
-
-## `nat`
+--
 
 ```elm
 nat: Goal Int
@@ -486,15 +416,7 @@ nat =
     natFrom 0
 ```
 
----
-
-## `nat`
-
-```elm
-nat: Term Int -> Goal Int
-nat =
-    natFrom 0
-```
+--
 
 ```elm
 natFrom : Int -> Term Int -> Goal Int
@@ -507,7 +429,7 @@ natFrom n =
 
 ---
 
-## `nat`
+# `nat`
 
 ```elm
 nat: Term Int -> Goal Int
