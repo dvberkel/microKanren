@@ -182,32 +182,37 @@ viewPuzzleInput model =
             viewInputHintRow model
     in
     Html.table []
-        [ viewInputHintRowFor [ setA, setB, setC, setD ]
-        , viewInputHintRowFor [ setE, setF, setG, setH ]
-        , viewInputHintRowFor [ setI, setJ, setK, setL ]
-        , viewInputHintRowFor [ setM, setN, setO, setP ]
+        [ viewInputHintRowFor [ (setA, .a), (setB, .b), (setC, .c), (setD, .d) ]
+        , viewInputHintRowFor [ (setE, .e), (setF, .f), (setG, .g), (setH, .h) ]
+        , viewInputHintRowFor [ (setI, .i), (setJ, .j), (setK, .k), (setL, .l) ]
+        , viewInputHintRowFor [ (setM, .m), (setN, .n), (setO, .o), (setP, .p) ]
         ]
 
 
-viewInputHintRow : Model -> List (String -> Model -> Model) -> Html Message
-viewInputHintRow _ modifiers =
+viewInputHintRow : Model -> List (String -> Model -> Model, Model -> Hint) -> Html Message
+viewInputHintRow model modifiers =
     let
         hintInputViews =
             modifiers
-                |> List.map viewHintInput
+                |> List.map (viewHintInput model)
     in
     Html.tr [] hintInputViews
 
 
-viewHintInput : (String -> Model -> Model) -> Html Message
-viewHintInput modifier =
+viewHintInput : Model -> (String -> Model -> Model, Model -> Hint) -> Html Message
+viewHintInput model (modifier, accessor) =
+    let
+        theHint =
+            accessor model        
+    in
+
     Html.td []
         [ Html.select [ Event.onInput <| Set modifier ]
-            [ Html.option [ Attribute.value "unknown" ] [ Html.text "unknown" ]
-            , Html.option [ Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
-            , Html.option [ Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
-            , Html.option [ Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
-            , Html.option [ Attribute.value <| sudokuValueToString Four ] [ Html.text <| sudokuValueToString Four ]
+            [ Html.option [ Attribute.selected (theHint == Nothing),Attribute.value "unknown" ] [ Html.text "unknown" ]
+            , Html.option [ Attribute.selected (theHint == Just One),Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
+            , Html.option [ Attribute.selected (theHint == Just Two),Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
+            , Html.option [ Attribute.selected (theHint == Just Three) ,Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
+            , Html.option [ Attribute.selected (theHint == Just Four), Attribute.value <| sudokuValueToString Four ] [ Html.text <| sudokuValueToString Four ]
             ]
         ]
 
