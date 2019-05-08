@@ -6,6 +6,7 @@ import Html.Attributes as Attribute
 import Html.Events as Event
 import MicroKanren
 import MicroKanren.Kernel as Kernel exposing (..)
+import MicroKanren.UserLevel exposing (take)
 
 
 main =
@@ -49,7 +50,7 @@ type SudokuValue
 
 emptyModel : Model
 emptyModel =
-    { a = Nothing 
+    { a = Nothing
     , b = Nothing
     , c = Nothing
     , d = Nothing
@@ -67,9 +68,10 @@ emptyModel =
     , p = Nothing
     }
 
+
 defaultModel : Model
 defaultModel =
-    { a = Just One 
+    { a = Just One
     , b = Nothing
     , c = Nothing
     , d = Nothing
@@ -192,6 +194,7 @@ view model =
     Html.div []
         [ viewPuzzleInput model
         , viewPuzzle model
+        , viewSolution model
         ]
 
 
@@ -202,14 +205,14 @@ viewPuzzleInput model =
             viewInputHintRow model
     in
     Html.table []
-        [ viewInputHintRowFor [ (setA, .a), (setB, .b), (setC, .c), (setD, .d) ]
-        , viewInputHintRowFor [ (setE, .e), (setF, .f), (setG, .g), (setH, .h) ]
-        , viewInputHintRowFor [ (setI, .i), (setJ, .j), (setK, .k), (setL, .l) ]
-        , viewInputHintRowFor [ (setM, .m), (setN, .n), (setO, .o), (setP, .p) ]
+        [ viewInputHintRowFor [ ( setA, .a ), ( setB, .b ), ( setC, .c ), ( setD, .d ) ]
+        , viewInputHintRowFor [ ( setE, .e ), ( setF, .f ), ( setG, .g ), ( setH, .h ) ]
+        , viewInputHintRowFor [ ( setI, .i ), ( setJ, .j ), ( setK, .k ), ( setL, .l ) ]
+        , viewInputHintRowFor [ ( setM, .m ), ( setN, .n ), ( setO, .o ), ( setP, .p ) ]
         ]
 
 
-viewInputHintRow : Model -> List (String -> Model -> Model, Model -> Hint) -> Html Message
+viewInputHintRow : Model -> List ( String -> Model -> Model, Model -> Hint ) -> Html Message
 viewInputHintRow model modifiers =
     let
         hintInputViews =
@@ -219,19 +222,18 @@ viewInputHintRow model modifiers =
     Html.tr [] hintInputViews
 
 
-viewHintInput : Model -> (String -> Model -> Model, Model -> Hint) -> Html Message
-viewHintInput model (modifier, accessor) =
+viewHintInput : Model -> ( String -> Model -> Model, Model -> Hint ) -> Html Message
+viewHintInput model ( modifier, accessor ) =
     let
         theHint =
-            accessor model        
+            accessor model
     in
-
     Html.td []
         [ Html.select [ Event.onInput <| Set modifier ]
-            [ Html.option [ Attribute.selected (theHint == Nothing),Attribute.value "unknown" ] [ Html.text "unknown" ]
-            , Html.option [ Attribute.selected (theHint == Just One),Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
-            , Html.option [ Attribute.selected (theHint == Just Two),Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
-            , Html.option [ Attribute.selected (theHint == Just Three) ,Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
+            [ Html.option [ Attribute.selected (theHint == Nothing), Attribute.value "unknown" ] [ Html.text "unknown" ]
+            , Html.option [ Attribute.selected (theHint == Just One), Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
+            , Html.option [ Attribute.selected (theHint == Just Two), Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
+            , Html.option [ Attribute.selected (theHint == Just Three), Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
             , Html.option [ Attribute.selected (theHint == Just Four), Attribute.value <| sudokuValueToString Four ] [ Html.text <| sudokuValueToString Four ]
             ]
         ]
@@ -325,6 +327,125 @@ hintToString aHint =
     aHint
         |> Maybe.map sudokuValueToString
         |> Maybe.withDefault ""
+
+
+viewSolution : Model -> Html Message
+viewSolution model =
+    let
+        goal =
+            modelToGoal model
+
+        stream =
+            goal emptyState
+    in
+    case stream of
+        Empty ->
+            viewUnsolvable
+
+        _ ->
+            stream
+                |> take 1
+                |> List.head
+                |> Maybe.map viewState
+                |> Maybe.withDefault viewUnsolvable
+
+
+viewUnsolvable : Html Message
+viewUnsolvable =
+    Html.div [] [ Html.span []  [ Html.text "Unsolvable" ] ]
+
+
+viewState : State Int -> Html Message
+viewState {substitution} =
+    viewSudokuSolution substitution
+
+viewSudokuSolution: Substitution Int -> Html Message
+viewSudokuSolution substitution =
+    Html.div [] [ Html.span [] [ Html.text "Ok" ] ]
+
+
+
+-- MicroKanren
+
+
+modelToGoal : Model -> Goal Int
+modelToGoal { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p } =
+    let
+        hintToGoal : Term Int -> Hint -> Goal Int
+        hintToGoal term aHint =
+            aHint
+                |> Maybe.map sudokuValueToInt
+                |> Maybe.map Value
+                |> Maybe.map (identical term)
+                |> Maybe.withDefault succeed
+    in
+    callFresh
+        (\aTerm ->
+            callFresh
+                (\bTerm ->
+                    callFresh
+                        (\cTerm ->
+                            callFresh
+                                (\dTerm ->
+                                    callFresh
+                                        (\eTerm ->
+                                            callFresh
+                                                (\fTerm ->
+                                                    callFresh
+                                                        (\gTerm ->
+                                                            callFresh
+                                                                (\hTerm ->
+                                                                    callFresh
+                                                                        (\iTerm ->
+                                                                            callFresh
+                                                                                (\jTerm ->
+                                                                                    callFresh
+                                                                                        (\kTerm ->
+                                                                                            callFresh
+                                                                                                (\lTerm ->
+                                                                                                    callFresh
+                                                                                                        (\mTerm ->
+                                                                                                            callFresh
+                                                                                                                (\nTerm ->
+                                                                                                                    callFresh
+                                                                                                                        (\oTerm ->
+                                                                                                                            callFresh
+                                                                                                                                (\pTerm ->
+                                                                                                                                    conj
+                                                                                                                                        [ hintToGoal aTerm a
+                                                                                                                                        , hintToGoal bTerm b
+                                                                                                                                        , hintToGoal cTerm c
+                                                                                                                                        , hintToGoal dTerm d
+                                                                                                                                        , hintToGoal eTerm e
+                                                                                                                                        , hintToGoal fTerm f
+                                                                                                                                        , hintToGoal gTerm g
+                                                                                                                                        , hintToGoal hTerm h
+                                                                                                                                        , hintToGoal iTerm i
+                                                                                                                                        , hintToGoal jTerm j
+                                                                                                                                        , hintToGoal kTerm k
+                                                                                                                                        , hintToGoal lTerm l
+                                                                                                                                        , hintToGoal mTerm m
+                                                                                                                                        , hintToGoal nTerm n
+                                                                                                                                        , hintToGoal oTerm o
+                                                                                                                                        , hintToGoal pTerm p
+                                                                                                                                        , sudoku aTerm bTerm cTerm dTerm eTerm fTerm gTerm hTerm iTerm jTerm kTerm lTerm mTerm nTerm oTerm pTerm
+                                                                                                                                        ]
+                                                                                                                                )
+                                                                                                                        )
+                                                                                                                )
+                                                                                                        )
+                                                                                                )
+                                                                                        )
+                                                                                )
+                                                                        )
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                )
+        )
 
 
 streamModel : MicroKanren.StreamModel Int
