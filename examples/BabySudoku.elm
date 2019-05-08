@@ -10,7 +10,7 @@ import MicroKanren.Kernel as Kernel exposing (..)
 
 main =
     Browser.sandbox
-        { init = emptyModel
+        { init = defaultModel
         , update = update
         , view = view
         }
@@ -49,7 +49,7 @@ type SudokuValue
 
 emptyModel : Model
 emptyModel =
-    { a = Just Four
+    { a = Nothing 
     , b = Nothing
     , c = Nothing
     , d = Nothing
@@ -65,6 +65,26 @@ emptyModel =
     , n = Nothing
     , o = Nothing
     , p = Nothing
+    }
+
+defaultModel : Model
+defaultModel =
+    { a = Just One 
+    , b = Nothing
+    , c = Nothing
+    , d = Nothing
+    , e = Nothing
+    , f = Just Three
+    , g = Nothing
+    , h = Nothing
+    , i = Nothing
+    , j = Just One
+    , k = Just Four
+    , l = Nothing
+    , m = Nothing
+    , n = Nothing
+    , o = Nothing
+    , p = Just Two
     }
 
 
