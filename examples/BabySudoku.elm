@@ -73,14 +73,94 @@ emptyModel =
 
 
 type Message
-    = Set (Model -> Hint) String
+    = Set (String -> Model -> Model) String
 
 
 update : Message -> Model -> Model
 update message model =
     case message of
-        Set attribute input ->
-            { model | a = stringToSudokuValue input }
+        Set modifier input ->
+            modifier input model
+
+
+setA : String -> Model -> Model
+setA input model =
+    { model | a = stringToSudokuValue input }
+
+
+setB : String -> Model -> Model
+setB input model =
+    { model | b = stringToSudokuValue input }
+
+
+setC : String -> Model -> Model
+setC input model =
+    { model | c = stringToSudokuValue input }
+
+
+setD : String -> Model -> Model
+setD input model =
+    { model | d = stringToSudokuValue input }
+
+
+setE : String -> Model -> Model
+setE input model =
+    { model | e = stringToSudokuValue input }
+
+
+setF : String -> Model -> Model
+setF input model =
+    { model | f = stringToSudokuValue input }
+
+
+setG : String -> Model -> Model
+setG input model =
+    { model | g = stringToSudokuValue input }
+
+
+setH : String -> Model -> Model
+setH input model =
+    { model | h = stringToSudokuValue input }
+
+
+setI : String -> Model -> Model
+setI input model =
+    { model | i = stringToSudokuValue input }
+
+
+setJ : String -> Model -> Model
+setJ input model =
+    { model | j = stringToSudokuValue input }
+
+
+setK : String -> Model -> Model
+setK input model =
+    { model | k = stringToSudokuValue input }
+
+
+setL : String -> Model -> Model
+setL input model =
+    { model | l = stringToSudokuValue input }
+
+
+setM : String -> Model -> Model
+setM input model =
+    { model | m = stringToSudokuValue input }
+
+
+setN : String -> Model -> Model
+setN input model =
+    { model | n = stringToSudokuValue input }
+
+
+setO : String -> Model -> Model
+setO input model =
+    { model | o = stringToSudokuValue input }
+
+
+setP : String -> Model -> Model
+setP input model =
+    { model | p = stringToSudokuValue input }
 
 
 
@@ -97,17 +177,37 @@ view model =
 
 viewPuzzleInput : Model -> Html Message
 viewPuzzleInput model =
+    let
+        viewInputHintRowFor =
+            viewInputHintRow model
+    in
     Html.table []
-        [ Html.tr []
-            [ Html.td []
-                [ Html.select [ Event.onInput <| Set .a ]
-                    [ Html.option [ Attribute.value "unknown" ] [ Html.text "unknown" ]
-                    , Html.option [ Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
-                    , Html.option [ Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
-                    , Html.option [ Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
-                    , Html.option [ Attribute.value <| sudokuValueToString Four ] [ Html.text <| sudokuValueToString Four ]
-                    ]
-                ]
+        [ viewInputHintRowFor [ setA, setB, setC, setD ]
+        , viewInputHintRowFor [ setE, setF, setG, setH ]
+        , viewInputHintRowFor [ setI, setJ, setK, setL ]
+        , viewInputHintRowFor [ setM, setN, setO, setP ]
+        ]
+
+
+viewInputHintRow : Model -> List (String -> Model -> Model) -> Html Message
+viewInputHintRow _ modifiers =
+    let
+        hintInputViews =
+            modifiers
+                |> List.map viewHintInput
+    in
+    Html.tr [] hintInputViews
+
+
+viewHintInput : (String -> Model -> Model) -> Html Message
+viewHintInput modifier =
+    Html.td []
+        [ Html.select [ Event.onInput <| Set modifier ]
+            [ Html.option [ Attribute.value "unknown" ] [ Html.text "unknown" ]
+            , Html.option [ Attribute.value <| sudokuValueToString One ] [ Html.text <| sudokuValueToString One ]
+            , Html.option [ Attribute.value <| sudokuValueToString Two ] [ Html.text <| sudokuValueToString Two ]
+            , Html.option [ Attribute.value <| sudokuValueToString Three ] [ Html.text <| sudokuValueToString Three ]
+            , Html.option [ Attribute.value <| sudokuValueToString Four ] [ Html.text <| sudokuValueToString Four ]
             ]
         ]
 
@@ -165,11 +265,34 @@ sudokuValueToInt value =
 
 viewPuzzle : Model -> Html Message
 viewPuzzle model =
+    let
+        hintRowFor =
+            viewHintRow model
+    in
     Html.table []
-        [ Html.tr []
-            [ Html.td [] [ Html.text <| hintToString model.a ]
-            ]
+        [ hintRowFor [ .a, .b, .c, .d ]
+        , hintRowFor [ .e, .f, .g, .h ]
+        , hintRowFor [ .i, .j, .k, .l ]
+        , hintRowFor [ .m, .n, .o, .p ]
         ]
+
+
+viewHintRow : Model -> List (Model -> Hint) -> Html Message
+viewHintRow model accessors =
+    let
+        hintAt =
+            viewHint model
+
+        hintViews =
+            accessors
+                |> List.map hintAt
+    in
+    Html.tr [] hintViews
+
+
+viewHint : Model -> (Model -> Hint) -> Html Message
+viewHint model accessor =
+    Html.td [] [ Html.text <| hintToString (accessor model) ]
 
 
 hintToString : Hint -> String
