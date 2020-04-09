@@ -3,7 +3,7 @@
     "name": "dvberkel/microkanren",
     "summary": "An Elm implementation of the μKanren language",
     "license": "MIT",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "exposed-modules": [
         "MicroKanren",
         "MicroKanren.Kernel",
