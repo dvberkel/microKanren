@@ -2,6 +2,7 @@ module MicroKanren.Kernel exposing
     ( Goal, State, Stream(..), Term(..), Var, Substitution
     , callFresh, conjoin, disjoin, identical
     , emptyState, unit
+    , walk
     )
 
 {-| μKanren provides an implementation of the
@@ -23,6 +24,10 @@ module MicroKanren.Kernel exposing
 ## Constructors
 
 @docs emptyState, unit
+
+## Accessors
+
+@docs walk
 
 -}
 
